@@ -11,5 +11,5 @@ Times we can meet to plan/work on this project (No work/class)
 | Jacob |
 
 #### Phone num
-Andrew: (970) 986-9323  return
+Andrew: (970) 986-9323   <br>
 Jesse: (970) 812-7372
