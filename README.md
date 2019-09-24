@@ -7,8 +7,9 @@ Times we can meet to plan/work on this project (No work/class)
 |       | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 |------:|:------:|:-------:|:---------:|:--------:|:------:|:--------:|:-------|
 | Andrew|2 - 4:30| 2 - 4:30| 2 - 4:30  | 2 - 4:30 |2 - 4:30|    Any   |   Any  | 
-| Jesse |       
+| Jesse |5 - 7:00| 2 - 5:00| 11 - 2:00 | 2 - 7:00 | none   | 8 - 3:00 |8 - 3:00|
 | Jacob |
 
 #### Phone num
 Andrew: (970) 986-9323
+Jesse: (970) 812-7372
