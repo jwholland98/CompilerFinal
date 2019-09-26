@@ -8,7 +8,7 @@ Times we can meet to plan/work on this project (No work/class)
 |------:|:------:|:-------:|:---------:|:--------:|:------:|:--------:|:-------|
 | Andrew|2 - 4:30| 2 - 4:30| 2 - 4:30  | 2 - 4:30 |2 - 4:30|    Any   |   Any  | 
 | Jesse |5 - 7:00| 2 - 5:00| 11 - 2:00 | 2 - 7:00 | none   | 8 - 3:00 |8 - 3:00|
-| Jacob |
+| Jacob |gaps |6am-930am| gaps | 6am-930am| gaps| Any | 6am - 10:30am, 7:30pm+|
 
 #### Phone num
 Andrew: (970) 986-9323   <br>
