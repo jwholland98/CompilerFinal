@@ -13,4 +13,5 @@ Times we can meet to plan/work on this project (No work/class)
 *gaps = 6am-9am, 10am-11am, 12-1pm, 2-3:00pm
 #### Phone num
 Andrew: (970) 986-9323   <br>
-Jesse: (970) 812-7372
+Jesse: (970) 812-7372    <br>
+JD: (970) 589-9781
