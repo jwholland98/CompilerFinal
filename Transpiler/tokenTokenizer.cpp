@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <regex>
 
+using namespace std;
 
 typedef enum{DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN,EOL } TokenType;
 
