@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN,EOL } TokenType;
+typedef enum{PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
     public:
@@ -33,20 +33,34 @@ class Tokenizer{
     Token peek() {
         smatch sm;
         string remaining=line.substr(pos);
+        //cout << remaining << endl;
+
         if (regex_match(remaining,sm,regex("(\\+|-).*"))) 
-          return Token(ADDITIVE_OP,sm[1]);
-        if (regex_match(remaining,sm,regex("((<=)|(=>)|(<>)|<|=|>).*"))) 
+          return Token(PLUSMINUS_OP,sm[1]);
+        if (regex_match(remaining,sm,regex("((<=)|(=>)|(==)|(<>)|<|>).*"))) 
           return Token(RELATIONAL_OP,sm[1]);
+        if (regex_match(remaining,sm,regex("(=).*"))) 
+          return Token(EQUAL,sm[1]);
+        if (regex_match(remaining,sm,regex("(;).*"))) 
+          return Token(SEMICOLON,sm[1]);
         if (regex_match(remaining,sm,regex("(or).*"))) 
           return Token(ADDITIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
-        /*if (regex_match(remaining,sm,regex("(not).*"))) 
-          return Token(UNARY_OP,sm[1]);*/
+        if (regex_match(remaining,sm,regex("((bool)|(char)[(16_t)(32_t)]?|(int)|(long)|(signed)|(unsigned)|(float)|(double)|(auto)).*"))) 
+          return Token(DATATYPE,sm[1]);
+        if (regex_match(remaining,sm,regex("(not).*"))) 
+          return Token(UNARY_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(\\().*"))) 
           return Token(OPEN_PAREN,sm[1]);
         if (regex_match(remaining,sm,regex("(\\)).*"))) 
           return Token(CLOSE_PAREN,sm[1]);
+        if (regex_match(remaining,sm,regex("([_$[a-zA-z]+[_$\\w]*).*")))
+          return Token(VARNAME,sm[1]);
+        if (regex_match(remaining,sm,regex("([0-9]+).*")))
+          return Token(UNSIGNED_INT,sm[1]);
+        if (regex_match(remaining,sm,regex("([0-9]*/.[0-9]+).*"))) 
+          return Token(UNSIGNED_REAL,sm[1]);
         return Token();
     }
     Token next(){

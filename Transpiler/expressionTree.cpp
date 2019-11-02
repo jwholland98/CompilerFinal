@@ -3,7 +3,6 @@
 #include "tokenTokenizer.cpp"
 #include <iostream>
 
-
 class ExpressionTree{
   public:
     ExpressionTree *left,*right;
