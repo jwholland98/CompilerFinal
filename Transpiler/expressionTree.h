@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tokenTokenizer.cpp"
+#include "tokenTokenizer.h"
 #include <iostream>
 
 class ExpressionTree{

@@ -1,11 +1,46 @@
 #pragma once
 
-#include "tokenTokenizer.cpp"
-#include "expressionTree.cpp"
+#include "tokenTokenizer.h"
+#include "expressionTree.h"
 #include <vector>
 #include <string>
+#include <iomanip>
 
 using namespace std;
+
+class SymbolEntry {
+	public:
+	vector<string> parameters;
+	ExpressionTree *expression;	
+};
+
+typedef map <string, SymbolEntry > SymbolTable;
+SymbolTable symbolTable;
+typedef SymbolTable::iterator SymbolIterator;
+ExpressionTree *inStatement;
+
+void summary(ostream &out) {
+    out << endl<< "Syntax Expression Tree Summary" <<endl;
+    out << setfill('-') << setw(20) << ' ' <<endl;
+	for (SymbolIterator i=symbolTable.begin();i!=symbolTable.end();i++) {
+		out << "Symbol: "<< i->first;
+        if (i->second.parameters.size()>0) {
+		  out << " Fun" << '(';
+		  for (unsigned int j=0;j< i->second.parameters.size();j++) {
+			if (j>0) cout << ", ";
+			out << i->second.parameters[j];
+		  }
+		  out << ')' << endl;
+        } else 
+          out << " Val" << endl;
+		i->second.expression->show(out);
+		out << endl;
+	}
+    out << "In ";
+	inStatement->show(out);
+    out << endl;
+    out << setfill('-') << setw(20) << ' ' <<endl;
+}
 
 class Parser{
     Tokenizer tokenizer;

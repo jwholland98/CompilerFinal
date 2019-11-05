@@ -1,7 +1,7 @@
 #include <iostream>
-#include "tokenTokenizer.cpp"
-#include "expressionTree.cpp"
-#include "parser.cpp"
+#include "tokenTokenizer.h"
+#include "expressionTree.h"
+#include "parser.h"
 
 using namespace std;
 
