@@ -12,7 +12,7 @@ class ExpressionTree{
         left=newLeft;
         right=newRight;
     }
-    void show(ostream &out) {
+    void show(ostream &out=cout) {
         if (left!=NULL) {
           left->show(out);
           out << "<--";

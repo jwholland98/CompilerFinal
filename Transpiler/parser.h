@@ -8,34 +8,57 @@
 
 using namespace std;
 
-typedef union stateTree{
-	string statement;
+struct StateTree{
 	ExpressionTree tree;
+	string statement;
 };
 
 
-vector<stateTree> SymbolTable;
+vector<StateTree> SymbolTable;
+
+void summary(){
+	for(auto i:SymbolTable){
+		i.tree.show(cout);
+		cout << endl;
+	}
+}
+
 class Parser{
     Tokenizer tokenizer;
     vector<string> error;
     public:
 
-    /*while(declaration(subtree)){
-        vars.push_back(subtree)
-    }*/
+	//while not eof
+
+	bool statement(){
+		Token next=tokenizer.peek();
+		if(next.type==DATATYPE){
+			while(declaration()){}
+			return true;
+		}
+		else if(next.type==FORLOOP){
+			return true;
+		}
+		else{
+			error.push_back("Expected DataType or for loop");
+			return false;
+		}
+	}
     
-    bool declaration(ExpressionTree &tree){
+    bool declaration(){
         Token next=tokenizer.next();
-        while(next.type==DATATYPE){
+        if(next.type==DATATYPE){
+			cout << "gothere" << endl;
             ExpressionTree *subtree=new ExpressionTree;
             next=tokenizer.next();
             if(next.type==VARNAME){
                 subtree=new ExpressionTree(next,NULL,NULL);
                 if(init_decl(*subtree)){
-                    tree=*subtree;
+					StateTree s;
+					s.tree = *subtree;
+					SymbolTable.push_back(s);
                     return true;
                 }
-				//add to symbol table
             }
             else{
                 error.push_back("expected varname");
@@ -50,15 +73,19 @@ class Parser{
         if(next.type==SEMICOLON){
             return true;
         }
-        if(next.type==EQUAL){
+        else if(next.type==EQUAL){
             ExpressionTree *subtree=new ExpressionTree();
             if(expression(*subtree)){
                 tree.right=subtree;
+				next=tokenizer.next();
                 return true;
             }
             error.push_back("expected expression");
             return false;
         }
+		/*else if(next.type==OPEN_PAREN){
+
+		}*/
         error.push_back("expected equal or semicolon at end of expression");
         return false;
     }
@@ -203,7 +230,7 @@ class Parser{
     ExpressionTree scan(string s){
         ExpressionTree tree; // Empty Tree Really
         tokenizer.start(s);
-        if (declaration(tree)){
+        if (statement()){
             return tree;
         } 
         else {

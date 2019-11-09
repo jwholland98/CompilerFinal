@@ -7,7 +7,10 @@ using namespace std;
 
 int main(){
 	Parser p;
-	ExpressionTree t=p.scan("int x=(2+3);");
-	t.show(cout);
+	string expression = 
+		"int x=(5+4);"
+		"int y=(3+2);";
+	p.scan(expression);
+	summary();
 	return 0;
 }
