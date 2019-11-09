@@ -8,40 +8,13 @@
 
 using namespace std;
 
-class SymbolEntry {
-	public:
-	vector<string> parameters;
-	ExpressionTree *expression;	
+typedef union stateTree{
+	string statement;
+	ExpressionTree tree;
 };
 
-typedef map <string, SymbolEntry > SymbolTable;
-SymbolTable symbolTable;
-typedef SymbolTable::iterator SymbolIterator;
-ExpressionTree *inStatement;
 
-void summary(ostream &out) {
-    out << endl<< "Syntax Expression Tree Summary" <<endl;
-    out << setfill('-') << setw(20) << ' ' <<endl;
-	for (SymbolIterator i=symbolTable.begin();i!=symbolTable.end();i++) {
-		out << "Symbol: "<< i->first;
-        if (i->second.parameters.size()>0) {
-		  out << " Fun" << '(';
-		  for (unsigned int j=0;j< i->second.parameters.size();j++) {
-			if (j>0) cout << ", ";
-			out << i->second.parameters[j];
-		  }
-		  out << ')' << endl;
-        } else 
-          out << " Val" << endl;
-		i->second.expression->show(out);
-		out << endl;
-	}
-    out << "In ";
-	inStatement->show(out);
-    out << endl;
-    out << setfill('-') << setw(20) << ' ' <<endl;
-}
-
+vector<stateTree> SymbolTable;
 class Parser{
     Tokenizer tokenizer;
     vector<string> error;
@@ -53,7 +26,7 @@ class Parser{
     
     bool declaration(ExpressionTree &tree){
         Token next=tokenizer.next();
-        if(next.type==DATATYPE){
+        while(next.type==DATATYPE){
             ExpressionTree *subtree=new ExpressionTree;
             next=tokenizer.next();
             if(next.type==VARNAME){
@@ -62,6 +35,7 @@ class Parser{
                     tree=*subtree;
                     return true;
                 }
+				//add to symbol table
             }
             else{
                 error.push_back("expected varname");
