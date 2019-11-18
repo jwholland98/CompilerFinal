@@ -6,7 +6,8 @@
 
 using namespace std;
 
-typedef enum{FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN,EOL,EQUAL, SEMICOLON} TokenType;
+typedef enum{FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+             MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
     public:
@@ -47,6 +48,8 @@ class Tokenizer{
           return Token(ADDITIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
+        if (regex_match(remaining,sm,regex("(for).*"))) 
+          return Token(FORLOOP,sm[1]);
         if (regex_match(remaining,sm,regex("((bool)|(char)[(16_t)(32_t)]?|(int)|(long)|(signed)|(unsigned)|(float)|(double)|(auto)).*"))) 
           return Token(DATATYPE,sm[1]);
         if (regex_match(remaining,sm,regex("(not).*"))) 
@@ -55,6 +58,10 @@ class Tokenizer{
           return Token(OPEN_PAREN,sm[1]);
         if (regex_match(remaining,sm,regex("(\\)).*"))) 
           return Token(CLOSE_PAREN,sm[1]);
+        if (regex_match(remaining,sm,regex("(\\{).*"))) 
+          return Token(OPEN_BRACKET,sm[1]);
+        if (regex_match(remaining,sm,regex("(\\}).*"))) 
+          return Token(CLOSE_BRACKET,sm[1]);
         if (regex_match(remaining,sm,regex("([_$[a-zA-z]+[_$\\w]*).*")))
           return Token(VARNAME,sm[1]);
         if (regex_match(remaining,sm,regex("([0-9]+).*")))

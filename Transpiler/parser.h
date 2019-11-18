@@ -37,7 +37,12 @@ class Parser{
 			return true;
 		}
 		else if(next.type==FORLOOP){
-			return true;
+			if(forloop())
+				return true;
+			else{
+				error.push_back("Invalid syntax in for loop");
+				return false;
+			}
 		}
 		else{
 			error.push_back("Expected DataType or for loop");
@@ -45,6 +50,48 @@ class Parser{
 		}
 	}
     
+	bool forloop(){
+		string forj;//string to store forloop
+		Token next=tokenizer.next();
+		if(next.type==FORLOOP){
+			next=tokenizer.next();
+			if(next.type==OPEN_PAREN){
+				next=tokenizer.next();
+				if(next.type==DATATYPE){
+					next=tokenizer.next();
+					if(next.type==VARNAME){
+						next=tokenizer.next();//doesn't currently allow for int i=0, only int i, might just call declaration instead
+						if(next.type==SEMICOLON){
+							next=tokenizer.next();
+							ExpressionTree *subtree = new ExpressionTree;
+							if(expression(*subtree)){//breaks after here; possibly too vague; doesn't allow varnames in expression
+								next=tokenizer.next();
+								if(next.type==SEMICOLON){
+									next=tokenizer.next();
+									ExpressionTree *subtree2 = new ExpressionTree;
+									if(expression(*subtree2)){//possibly too vague
+										next=tokenizer.next();
+										if(next.type==CLOSE_PAREN){
+											next=tokenizer.next();
+											if(next.type==OPEN_BRACKET){
+												next=tokenizer.next();
+												cout << "yay" << endl;
+												return true;
+												//call statement I believe in here
+												//wait till after statement call to append }
+											}else error.push_back("expected )");
+										}else error.push_back("expected )");
+									}else error.push_back("expected expression");
+								}else error.push_back("expected semicolon");
+							}else error.push_back("expected expression");
+						}else error.push_back("expected semicolon");
+					}else error.push_back("invalid varname");
+				}else error.push_back("expected type declaration");
+			}else error.push_back("expected (");
+		}else error.push_back("expected for keyword");
+		return false;
+	}
+
     bool declaration(){
         Token next=tokenizer.next();
         if(next.type==DATATYPE){
@@ -89,7 +136,7 @@ class Parser{
         error.push_back("expected equal or semicolon at end of expression");
         return false;
     }
-    bool expression(ExpressionTree &tree){
+    bool expression(ExpressionTree &tree){//need to make sure everything below allows varnames and not just numbers
 		ExpressionTree *subtree=new ExpressionTree();	
 	    ExpressionTree *left=NULL;
 	    Token last;
