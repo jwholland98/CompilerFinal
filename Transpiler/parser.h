@@ -47,9 +47,11 @@ class Parser{
 			if(next.type==VARNAME){
 				next=tokenizer.next();
 				if(next.type==SEMICOLON){
-					next=tokenizer.next();
+					next=tokenizer.peek();
 				}else error.push_back("expected ;");
 			}else error.push_back("expected name of namespace");
+		//next=tokenizer.next();
+		cout << next.value << endl;
 		while(fun()){
 			StateTree s;
 			s.statement = "\n";
@@ -76,9 +78,12 @@ class Parser{
 	}
 
 	bool fun(){
-		Token next=tokenizer.next();
+		Token next=tokenizer.peek();
+		cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
+			next=tokenizer.next();
+			cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
 					next=tokenizer.next();
