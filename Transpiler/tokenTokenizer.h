@@ -48,7 +48,7 @@ class Tokenizer{
           return Token(ADDITIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(#include).*"))) 
           return Token(INCLUDE,sm[1]);
-        if (regex_match(remaining,sm,regex("(using namespace .+;).*"))) 
+        if (regex_match(remaining,sm,regex("(usingnamespace).*"))) 
           return Token(USING,sm[1]);
         if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
