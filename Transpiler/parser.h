@@ -32,7 +32,67 @@ class Parser{
     public:
 
 	bool start(){
-		
+		Token next=tokenizer.peek();
+		while(include()){
+			StateTree s;
+			s.statement = "\n";
+			SymbolTable.push_back(s);
+		}
+		next=tokenizer.peek();
+		if(next.type==USING)
+			next=tokenizer.next();
+		while(fun()){
+			StateTree s;
+			s.statement = "\n";
+			SymbolTable.push_back(s);
+		}
+		return true;
+	}
+
+	bool include(){
+		Token next=tokenizer.peek();
+		if (next.type==INCLUDE){
+			next=tokenizer.next();
+			if(next.value=="<"){
+				next=tokenizer.next();
+				if(next.type==VARNAME){
+					next=tokenizer.next();
+					if(next.value==">"){
+						return true;
+					}else error.push_back("expected >");
+				}
+			}else error.push_back("expected <");
+		}
+		return false;
+	}
+
+	bool fun(){
+		Token next=tokenizer.next();
+		if(next.type==DATATYPE){
+			next=tokenizer.next();
+			if(next.type==VARNAME) {
+				if(next.value=="main"){
+					next=tokenizer.next();
+					if(next.type==OPEN_PAREN){//can add params into main later
+						next=tokenizer.next();
+						if(next.type==CLOSE_PAREN){
+							next=tokenizer.next();
+							if(next.type==OPEN_BRACKET){
+								while(statement()){}
+								next=tokenizer.next();
+								if(next.type==CLOSE_BRACKET){
+									return true;
+								}else error.push_back("expected }");
+							}else error.push_back("expected {");
+						}else error.push_back("expected )");
+					}else error.push_back("expected (");
+				}
+				else{//for normal functions
+
+				}
+			}else error.push_back("expected variable name");
+		}
+		return false;
 	}
 
 	bool statement(){//might need flag defaulted to false to know if coming from for loop
@@ -323,7 +383,7 @@ class Parser{
     ExpressionTree scan(string s){
         ExpressionTree tree; // Empty Tree Really
         tokenizer.start(s);
-        if (statement()){
+        if (start()){
             return tree;
         } 
         else {

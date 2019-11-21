@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+typedef enum{USING, INCLUDE, FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
              MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
@@ -34,7 +34,7 @@ class Tokenizer{
     Token peek() {
         smatch sm;
         string remaining=line.substr(pos);
-        //cout << remaining << endl;
+        cout << remaining << endl;
 
         if (regex_match(remaining,sm,regex("(\\+|-).*"))) 
           return Token(PLUSMINUS_OP,sm[1]);
@@ -46,6 +46,10 @@ class Tokenizer{
           return Token(SEMICOLON,sm[1]);
         if (regex_match(remaining,sm,regex("(or).*"))) 
           return Token(ADDITIVE_OP,sm[1]);
+        if (regex_match(remaining,sm,regex("(#include).*"))) 
+          return Token(INCLUDE,sm[1]);
+        if (regex_match(remaining,sm,regex("(using namespace .+;).*"))) 
+          return Token(USING,sm[1]);
         if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(for).*"))) 
