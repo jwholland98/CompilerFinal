@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{USING, INCLUDE, FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+typedef enum{COUT, USING, INCLUDE, FORLOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
              MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
@@ -50,6 +50,8 @@ class Tokenizer{
           return Token(INCLUDE,sm[1]);
         if (regex_match(remaining,sm,regex("(usingnamespace).*"))) 
           return Token(USING,sm[1]);
+        if (regex_match(remaining,sm,regex("(cout).*"))) 
+          return Token(COUT,sm[1]);
         if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(for).*"))) 

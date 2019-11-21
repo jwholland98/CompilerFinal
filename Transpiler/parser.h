@@ -103,6 +103,7 @@ class Parser{
 				}
 				else {
 					next=tokenizer.next();
+					cout << next.value << endl;
 					if (next.type==OPEN_PAREN) {
 						next = tokenizer.peek();
 						cout << next.value << endl << endl;
@@ -165,6 +166,14 @@ class Parser{
 			error.push_back("undeclared variable used");
 			return false;
 		}
+		else if(next.type==COUT){
+			if(output())
+				return true;
+			else{
+				error.push_back("Invalid syntax in cout");
+				return false;
+			}
+		}
 		else{
 			error.push_back("Expected DataType, variable name, or for loop");
 			return false;
@@ -218,6 +227,10 @@ class Parser{
 				}else error.push_back("expected declaration");
 			}else error.push_back("expected (");
 		}else error.push_back("expected for keyword");
+		return false;
+	}
+
+	bool output(){
 		return false;
 	}
 

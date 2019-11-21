@@ -16,7 +16,7 @@ int main(){
 								"int y=(3+2);"
 								"int a=12;"
 							"}"
-						"}";
+						"}"
 						
 						"int test() {"
 								"int x=5;"
