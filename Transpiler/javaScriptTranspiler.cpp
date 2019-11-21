@@ -12,9 +12,14 @@ int main(){
 						"using namespace std;"
 						"int main(){"
 								"for(int i=0;i<3;i=i+1){"
-								"int x=(5+4);"
+								"int x=5+4;"
 								"int y=(3+2);"
+								"int a=12;"
 							"}"
+						"}"
+						
+						"int test() {"
+								"int x=5;"
 						"}";
 	p.scan(expression);
 	summary();

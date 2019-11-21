@@ -96,8 +96,27 @@ class Parser{
 						}else error.push_back("expected )");
 					}else error.push_back("expected (");
 				}
-				else{//for normal functions
-
+				else {
+					next=tokenizer.next();
+					if (next.type==OPEN_PAREN) {
+						next = tokenizer.peek();
+						cout << next.value << endl << endl;
+						if (next.type==DATATYPE) {
+							next = tokenizer.next();
+						}
+						else if (next.type==CLOSE_PAREN) {
+							next=tokenizer.next();
+							if(next.type==OPEN_BRACKET){
+								while(statement()) {
+									cout << next.value << endl;
+								}
+								next=tokenizer.next();
+								if(next.type==CLOSE_BRACKET){
+									return true;
+								} else error.push_back("expected }");
+							} else error.push_back("expected {");
+						}
+					}
 				}
 			}else error.push_back("expected variable name");
 		}
@@ -168,7 +187,7 @@ class Parser{
 							forj+=";";
 							s.statement=forj;
 							SymbolTable.push_back(s);
-							if(statement()){//doesnt allow i++
+							while(statement()){//doesnt allow i++
 								next=tokenizer.next();
 								if(next.type==CLOSE_PAREN){
 									forj = next.value;
@@ -188,7 +207,7 @@ class Parser{
 										}
 									}else error.push_back("expected {");
 								}else error.push_back("expected )");
-							}else error.push_back("expected expression");
+							} //else error.push_back("expected expression");
 						}else error.push_back("expected semicolon");
 					}else error.push_back("expected expression");
 				}else error.push_back("expected declaration");
