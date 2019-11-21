@@ -11,7 +11,7 @@ int main(){
 						"#include <iostream>"
 						"using namespace std;"//this has to be included for some reason; address later
 						"int main(){"
-								"for(int i=0;i<3;i=i+1){"
+								"while(i>3){"
 								"int x=5+4;"
 								"int y=(3+2);"
 								"int a=12;"

@@ -147,6 +147,14 @@ class Parser{
 				return false;
 			}
 		}
+		else if(next.type==WHILELOOP){
+			if(whileloop())
+				return true;
+			else{
+				error.push_back("Invalid syntax in for loop");
+				return false;
+			}
+		}
 		else if(next.type==VARNAME){
 			next=tokenizer.next();
 			//checks if var is declared already
@@ -227,6 +235,43 @@ class Parser{
 				}else error.push_back("expected declaration");
 			}else error.push_back("expected (");
 		}else error.push_back("expected for keyword");
+		return false;
+	}
+
+	bool whileloop(){
+		string whilej;//string to store forloop
+		StateTree s;
+		Token next=tokenizer.next();
+		if(next.type==WHILELOOP){
+			whilej+=next.value;
+			next=tokenizer.next();
+			if(next.type==OPEN_PAREN){
+				whilej+=next.value;
+				ExpressionTree *subtree = new ExpressionTree;
+				if(expression(*subtree)){//doesnt put in while
+					whilej+=subtree->left->operation.value + subtree->operation.value + subtree->right->operation.value;
+					next=tokenizer.next();
+					if(next.type==CLOSE_PAREN){
+						whilej+=next.value;
+						next=tokenizer.next();
+						if(next.type==OPEN_BRACKET){
+							whilej += next.value+'\n';
+							s.statement=whilej;
+							SymbolTable.push_back(s);
+							while(statement()){
+								next=tokenizer.next();
+							}
+							if(next.type==CLOSE_BRACKET){
+								whilej =next.value + '\n';
+								s.statement=whilej;
+								SymbolTable.push_back(s);
+								return true;
+							}else error.push_back("expected }");
+						}else error.push_back("expected {");
+					}else error.push_back("expected )");
+				}else error.push_back("expected expression");
+			}else error.push_back("expected (");
+		}else error.push_back("expected while keyword");
 		return false;
 	}
 
