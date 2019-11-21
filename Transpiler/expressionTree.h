@@ -24,4 +24,14 @@ class ExpressionTree{
           right->show(out);
         }
     }
+    string treeToString(string s=""){
+        if (left!=NULL) {
+          s+=left->treeToString(s);
+        }
+        s += operation.value;
+        if (right!=NULL) {
+          s=right->treeToString(s);//possible error here as it only is working with =, not +=
+        }
+        return s;
+      }
 };

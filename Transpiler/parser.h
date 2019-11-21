@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-#include <typeinfo>
 
 using namespace std;
 
@@ -19,8 +18,11 @@ vector<StateTree> SymbolTable;
 
 void summary(){
 	for(auto i:SymbolTable){
-		i.tree.show(cout);
-		cout << endl;
+		if(i.statement==""){
+			i.tree.show(cout);
+		}
+		else
+			cout << i.statement;
 	}
 }
 
@@ -29,12 +31,18 @@ class Parser{
     vector<string> error;
     public:
 
-	//while not eof
+	bool start(){
+		
+	}
 
 	bool statement(){//might need flag defaulted to false to know if coming from for loop
 		Token next=tokenizer.peek();
 		if(next.type==DATATYPE){
-			while(declaration()){}
+			while(declaration()){
+				StateTree s;
+				s.statement = "\n";
+				SymbolTable.push_back(s);
+			}
 			return true;
 		}
 		else if(next.type==FORLOOP){
@@ -47,15 +55,15 @@ class Parser{
 		}
 		else if(next.type==VARNAME){
 			next=tokenizer.next();
-			//check if var is declared already
+			//checks if var is declared already
 			for(auto i:SymbolTable){
-				cout << i.statement << endl;
 				if(i.statement==""){
 					if(i.tree.operation.value==next.value){
 						ExpressionTree subtree = i.tree;
-						if(init_decl(subtree)){//its grabbing the close_paren when it shouldnt
-							//likely convert tree to string here
-							cout << "done here" << endl;
+						if(init_decl(subtree)){
+							StateTree s;
+							s.statement=subtree.operation.value + '=' + subtree.right->treeToString();
+							SymbolTable.push_back(s);
 							return true;
 						}
 					}
@@ -72,23 +80,40 @@ class Parser{
     
 	bool forloop(){
 		string forj;//string to store forloop
+		StateTree s;
 		Token next=tokenizer.next();
 		if(next.type==FORLOOP){
+			forj+=next.value;
 			next=tokenizer.next();
 			if(next.type==OPEN_PAREN){
+				forj+=next.value;
+				s.statement=forj;
+				SymbolTable.push_back(s);
 				if(declaration()){
+					forj=";";
 					ExpressionTree *subtree = new ExpressionTree;
 					if(expression(*subtree)){//possibly too vague
+						forj+=subtree->left->operation.value + subtree->operation.value + subtree->right->operation.value;
 						next=tokenizer.next();
 						if(next.type==SEMICOLON){
+							forj+=";";
+							s.statement=forj;
+							SymbolTable.push_back(s);
 							if(statement()){//doesnt allow i++
 								next=tokenizer.next();
 								if(next.type==CLOSE_PAREN){
+									forj = next.value;
 									next=tokenizer.next();
 									if(next.type==OPEN_BRACKET){
+										forj += next.value+'\n';
+										s.statement=forj;
+										SymbolTable.push_back(s);
 										if(statement()){
 											next=tokenizer.next();
 											if(next.type==CLOSE_BRACKET){
+												forj =next.value + '\n';
+												s.statement=forj;
+												SymbolTable.push_back(s);
 												return true;
 											}else error.push_back("expected }");
 										}

@@ -34,7 +34,7 @@ class Tokenizer{
     Token peek() {
         smatch sm;
         string remaining=line.substr(pos);
-        cout << remaining << endl;
+        //cout << remaining << endl;
 
         if (regex_match(remaining,sm,regex("(\\+|-).*"))) 
           return Token(PLUSMINUS_OP,sm[1]);
