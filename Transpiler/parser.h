@@ -33,14 +33,23 @@ class Parser{
 
 	bool start(){
 		Token next=tokenizer.peek();
-		while(include()){
-			StateTree s;
-			s.statement = "\n";
-			SymbolTable.push_back(s);
+		if (next.type==INCLUDE){
+			while(include()){
+				StateTree s;
+				s.statement = "\n";
+				SymbolTable.push_back(s);
+			}
 		}
 		next=tokenizer.peek();
 		if(next.type==USING)
 			next=tokenizer.next();
+			next=tokenizer.next();
+			if(next.type==VARNAME){
+				next=tokenizer.next();
+				if(next.type==SEMICOLON){
+					next=tokenizer.next();
+				}else error.push_back("expected ;");
+			}else error.push_back("expected name of namespace");
 		while(fun()){
 			StateTree s;
 			s.statement = "\n";
@@ -50,7 +59,7 @@ class Parser{
 	}
 
 	bool include(){
-		Token next=tokenizer.peek();
+		Token next=tokenizer.next();
 		if (next.type==INCLUDE){
 			next=tokenizer.next();
 			if(next.value=="<"){
