@@ -201,15 +201,15 @@ class Parser{
 										forj += next.value+'\n';
 										s.statement=forj;
 										SymbolTable.push_back(s);
-										if(statement()){
+										while(statement()){
 											next=tokenizer.next();
-											if(next.type==CLOSE_BRACKET){
-												forj =next.value + '\n';
-												s.statement=forj;
-												SymbolTable.push_back(s);
-												return true;
-											}else error.push_back("expected }");
 										}
+										if(next.type==CLOSE_BRACKET){
+											forj =next.value + '\n';
+											s.statement=forj;
+											SymbolTable.push_back(s);
+											return true;
+										}else error.push_back("expected }");
 									}else error.push_back("expected {");
 								}else error.push_back("expected )");
 							} //else error.push_back("expected expression");

@@ -9,7 +9,7 @@ int main(){
 	Parser p;
 	string expression = 
 						"#include <iostream>"
-						"using namespace std;"//this has to be includede for some reason; address later
+						"using namespace std;"//this has to be included for some reason; address later
 						"int main(){"
 								"for(int i=0;i<3;i=i+1){"
 								"int x=5+4;"
