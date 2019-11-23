@@ -173,7 +173,7 @@ class Parser{
 			}
 		}
 		else if(next.type==IF){
-			if(ifelse())
+			if(ifelse(next))
 				return true;
 			else{
 				error.push_back("Invalid syntax for IF or ELSE statment");
@@ -212,30 +212,28 @@ class Parser{
 		}
 	}
 
-	bool ifelse(){
-		Token next=tokenizer.next();
-		cout << "I'm in ifelse() and 'next' is: " << next.type << endl;
-		if(next.type==IF){ // I'M RIGHT HERE++++++++++++++++++++++++++++++++++++++++++++++++++
-			cout << "current type: " << next.type << endl;
+	bool ifelse(Token &next){
+		next=tokenizer.next();
+		if(next.type==IF){
 			next=tokenizer.next();
-			cout << "new type: " << next.type << endl;
 			if(next.type==OPEN_PAREN){
 				ExpressionTree *subtree= new ExpressionTree;
 				if(expression(*subtree)){
 					next=tokenizer.next();
-					if(next.type==CLOSE_PAREN){ // Could add option not requiring brackets for single line expressions here
+					if(next.type==CLOSE_PAREN){
 						next=tokenizer.next();
-						if(next.type==OPEN_BRACKET){ // Could add option for continuing with empty statment here
-							while(statement()){
+						if(next.type==OPEN_BRACKET){
+							next=tokenizer.peek();
+							while(statement(next))
 								next=tokenizer.next();
-							}
 							if(next.type==CLOSE_BRACKET){
 								next=tokenizer.peek();
 								if(next.type==ELSE){
 									next=tokenizer.next();
 									next=tokenizer.next();
 									if(next.type==OPEN_BRACKET){
-										while(statement()){
+										next=tokenizer.peek();
+										while(statement(next)){
 											next=tokenizer.next();
 										}
 										if(next.type==CLOSE_BRACKET){
