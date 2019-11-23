@@ -13,15 +13,19 @@ int main(){
 						"int main(){"
 							"int i=0;"
 							"for(int i=0;i<4;i=i+1){"
-								"int x=5+4;"
+								"int z=5+4;"
 								"int y=(3+2);"
 								"int a=12;"
 							//	"i++"
 							"}"
 						"}"
 						
-						"int test(){"
-								"int x=5;"
+						"int foo(){"
+								"int r=2;"
+						"}"
+
+						"int test(int x){"
+								"x=5;"
 						"}";
 	p.scan(expression);
 	summary();

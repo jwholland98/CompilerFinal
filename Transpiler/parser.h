@@ -93,13 +93,13 @@ class Parser{
 	}
 
 	bool fun(Token &next){
-		cout << endl << endl << "***FUNCTIONS***" << endl;
 		next=tokenizer.peek();
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
 			next=tokenizer.next(); 
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
+					cout << endl << endl << "***MAIN FUNCTION***" << endl;
 					next=tokenizer.next();
 					if(next.type==OPEN_PAREN){//can add params into main later
 						next=tokenizer.next();
@@ -120,13 +120,15 @@ class Parser{
 					if (next.type==OPEN_PAREN) {
 						next = tokenizer.next();
 						if (next.type==DATATYPE) {
+							cout << endl << endl << "***FUNCTION(S) WITH PARAM(S)***" << endl;
 							next = tokenizer.next();
 						}
 						else if (next.type==CLOSE_PAREN) {
+							cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
 								while(statement(next)) {
-									cout << next.value << endl;
+									//cout << next.value << endl;
 								}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
@@ -169,9 +171,9 @@ class Parser{
 				return false;
 			}
 		}
-		cout << next.value << endl;
+		//cout << next.value << endl;
 		if(next.type==VARNAME){
-			cout << "hi2" << endl;
+			//cout << "hi2" << endl;
 			next=tokenizer.next();
 			//checks if var is declared already
 			for(auto i:SymbolTable){
@@ -332,7 +334,6 @@ class Parser{
 
     bool declaration(Token &next){
 		next=tokenizer.peek();//next few lines ensure close bracket in for loop isnt consumed
-		cout << endl << "decl" << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
             ExpressionTree *subtree=new ExpressionTree;
@@ -357,7 +358,6 @@ class Parser{
     }
     bool init_decl(ExpressionTree &tree){
         Token next=tokenizer.next();
-		cout << endl << next.value << endl;
         if(next.type==SEMICOLON){
 			return true;
         }
