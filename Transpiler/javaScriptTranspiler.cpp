@@ -9,7 +9,7 @@ int main(){
 	Parser p;
 	string expression = 
 						"#include <iostream>"
-						"using namespace std;"//this has to be included for some reason; address later
+						"using namespace std;"
 						"int main(){"
 								"while(i>3){"
 								"int x=5+4;"
@@ -18,7 +18,7 @@ int main(){
 							"}"
 						"}"
 						
-						"int test() {"
+						"int test(){"
 								"int x=5;"
 						"}";
 	p.scan(expression);
