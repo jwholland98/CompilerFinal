@@ -7,19 +7,17 @@ using namespace std;
 
 int main(){
 	Parser p;
-	string expression = 
-						"#include <iostream>"
+	string expression = "#include <iostream>"
 						"using namespace std;"//this has to be included for some reason; address later
 						"int main(){"
-								"while(i>3){"
-								"int x=5+4;"
-								"int y=(3+2);"
-								"int a=12;"
+							"int z = 0;"
+							"int x = 1;"
+							"if(x){"
+								"int y = 2;"
+								"if(z){"
+									"int mynum = 17"
+								"}"
 							"}"
-						"}"
-						
-						"int test() {"
-								"int x=5;"
 						"}";
 	p.scan(expression);
 	summary();
