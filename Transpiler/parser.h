@@ -146,7 +146,6 @@ class Parser{
 		return false;
 	}
 
-
 	bool statement(Token &next){//might need flag defaulted to false to know if coming from for loop
 		cout << endl << endl << "***STATEMENT***" << endl;
 		if(next.type==DATATYPE){
@@ -171,6 +170,13 @@ class Parser{
 			else{
 				error.push_back("Invalid syntax in for loop");
 				return false;
+			}
+		}
+		else if(next.type==IF){
+			if(ifelse())
+				return true;
+			else{
+				error.push_back("Invalid syntax for IF or ELSE statment");
 			}
 		}
 		else if(next.type==VARNAME){
@@ -204,6 +210,46 @@ class Parser{
 			error.push_back("Expected DataType, variable name, or for loop");
 			return false;
 		}
+	}
+
+	bool ifelse(){
+		Token next=tokenizer.next();
+		cout << "I'm in ifelse() and 'next' is: " << next.type << endl;
+		if(next.type==IF){ // I'M RIGHT HERE++++++++++++++++++++++++++++++++++++++++++++++++++
+			cout << "current type: " << next.type << endl;
+			next=tokenizer.next();
+			cout << "new type: " << next.type << endl;
+			if(next.type==OPEN_PAREN){
+				ExpressionTree *subtree= new ExpressionTree;
+				if(expression(*subtree)){
+					next=tokenizer.next();
+					if(next.type==CLOSE_PAREN){ // Could add option not requiring brackets for single line expressions here
+						next=tokenizer.next();
+						if(next.type==OPEN_BRACKET){ // Could add option for continuing with empty statment here
+							while(statement()){
+								next=tokenizer.next();
+							}
+							if(next.type==CLOSE_BRACKET){
+								next=tokenizer.peek();
+								if(next.type==ELSE){
+									next=tokenizer.next();
+									next=tokenizer.next();
+									if(next.type==OPEN_BRACKET){
+										while(statement()){
+											next=tokenizer.next();
+										}
+										if(next.type==CLOSE_BRACKET){
+											return true;
+										}else error.push_back("Expected } in 'if' statment");
+									}else error.push_back("Expected { in 'if' statment");
+								}else return true;
+							}else error.push_back("Expected } in 'if' statement");
+						}else error.push_back("Expected { in 'if' statement");
+					}else error.push_back("Expected ) in 'if' statement");
+				}else error.push_back("Expected expression in 'if' statement");
+			}else error.push_back("Expected ( in 'if' statement");
+		}else error.push_back("Expected 'if' keyword");
+		return false;
 	}
     
 	bool forloop(Token &next){
