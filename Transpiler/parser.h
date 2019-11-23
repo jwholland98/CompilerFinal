@@ -17,6 +17,7 @@ struct StateTree{
 vector<StateTree> SymbolTable;
 
 void summary(){
+	cout << endl << endl << "***SUMMARY***" << endl;
 	for(auto i:SymbolTable){
 		if(i.statement==""){
 			i.tree.show(cout);
@@ -32,59 +33,73 @@ class Parser{
     public:
 
 	bool start(){
-		Token next=tokenizer.peek();
-		if (next.type==INCLUDE){
-			while(include()){
-				StateTree s;
-				s.statement = "\n";
-				SymbolTable.push_back(s);
-			}
+		cout << "***START***" << endl;
+		StateTree s;
+		Token next;//=tokenizer.peek();
+		while(include(next)){
+			s.statement = "\n";
+			SymbolTable.push_back(s);
 		}
-		next=tokenizer.peek();
-		if(next.type==USING)
-			next=tokenizer.next();
-			next=tokenizer.next();
-			if(next.type==VARNAME){
-				next=tokenizer.next();
-				if(next.type==SEMICOLON){
-					next=tokenizer.peek();
-				}else error.push_back("expected ;");
-			}else error.push_back("expected name of namespace");
+		//next=tokenizer.peek();
+		while(namespaces(next)) {
+			s.statement = "\n";
+			SymbolTable.push_back(s);
+		}
 		//next=tokenizer.next();
-		cout << next.value << endl;
-		while(fun()){
-			StateTree s;
+		//cout << next.value << endl;
+		while(fun(next)){
 			s.statement = "\n";
 			SymbolTable.push_back(s);
 		}
 		return true;
 	}
 
-	bool include(){
-		Token next=tokenizer.next();
-		if (next.type==INCLUDE){
+	bool include(Token &next){
+		next=tokenizer.peek();
+		if (next.type==INCLUDE) {
+			cout << endl << endl << "***INCLUDE***" << endl;
+			next=tokenizer.next();
 			next=tokenizer.next();
 			if(next.value=="<"){
 				next=tokenizer.next();
 				if(next.type==VARNAME){
 					next=tokenizer.next();
 					if(next.value==">"){
+						//next=tokenizer.peek();
 						return true;
-					}else error.push_back("expected >");
+					} else error.push_back("expected >");
 				}
-			}else error.push_back("expected <");
+			} else error.push_back("expected <");
 		}
 		return false;
 	}
 
+	bool namespaces(Token &next) {
+		next = tokenizer.peek();
+		//cout << endl << endl<< next.value << endl << endl;
+		if(next.type==USING) {
+			cout << endl << endl << "***NAMESPACES***" << endl;
+			next=tokenizer.next();
+			next=tokenizer.next();
+			if(next.type==VARNAME){
+				next=tokenizer.next();
+				if(next.type==SEMICOLON){
+					//next=tokenizer.peek();
+					return true;
+				} else error.push_back("expected ;");
+			} else error.push_back("expected name of namespace");
+		}
+		return false;
+	}
 
-	bool fun(){
-		Token next=tokenizer.peek();
-		cout << next.value << endl;
+	bool fun(Token &next){
+		cout << endl << endl << "***FUNCTIONS***" << endl;
+		next=tokenizer.peek();
+		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
-			next=tokenizer.next();
-			cout << next.value << endl;
+			next=tokenizer.next(); 
+			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
 					next=tokenizer.next();
@@ -93,7 +108,8 @@ class Parser{
 						if(next.type==CLOSE_PAREN){
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
-								while(statement()){}
+								next=tokenizer.peek();
+								while(statement(next)){}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
 									return true;
@@ -104,17 +120,17 @@ class Parser{
 				}
 				else {
 					next=tokenizer.next();
-					cout << next.value << endl;
+					//cout << next.value << endl;
 					if (next.type==OPEN_PAREN) {
 						next = tokenizer.peek();
-						cout << next.value << endl << endl;
+						//cout << next.value << endl << endl;
 						if (next.type==DATATYPE) {
 							next = tokenizer.next();
 						}
 						else if (next.type==CLOSE_PAREN) {
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
-								while(statement()) {
+								while(statement(next)) {
 									cout << next.value << endl;
 								}
 								next=tokenizer.next();
@@ -130,13 +146,10 @@ class Parser{
 		return false;
 	}
 
-	bool statement(){//might need flag defaulted to false to know if coming from for loop
-		Token next=tokenizer.peek();
-		cout << endl;
-		cout << "In statement. 'next' is: " << next.type << endl;
-		cout << endl;
+	bool statement(Token &next){//might need flag defaulted to false to know if coming from for loop
+		cout << endl << endl << "***STATEMENT***" << endl;
 		if(next.type==DATATYPE){
-			while(declaration()){
+			while(declaration(next)){
 				StateTree s;
 				s.statement = "\n";
 				SymbolTable.push_back(s);
@@ -144,7 +157,7 @@ class Parser{
 			return true;
 		}
 		else if(next.type==FORLOOP){
-			if(forloop())
+			if(forloop(next))
 				return true;
 			else{
 				error.push_back("Invalid syntax in for loop");
@@ -152,7 +165,7 @@ class Parser{
 			}
 		}
 		else if(next.type==WHILELOOP){
-			if(whileloop())
+			if(whileloop(next))
 				return true;
 			else{
 				error.push_back("Invalid syntax in for loop");
@@ -185,8 +198,8 @@ class Parser{
 			error.push_back("undeclared variable used");
 			return false;
 		}
-		else if(next.type==COUT){
-			if(output())
+		if(next.type==COUT){
+			if(output(next))
 				return true;
 			else{
 				error.push_back("Invalid syntax in cout");
@@ -239,10 +252,10 @@ class Parser{
 		return false;
 	}
     
-	bool forloop(){
+	bool forloop(Token &next){
 		string forj;//string to store forloop
 		StateTree s;
-		Token next=tokenizer.next();
+		next=tokenizer.next();
 		if(next.type==FORLOOP){
 			forj+=next.value;
 			next=tokenizer.next();
@@ -250,7 +263,7 @@ class Parser{
 				forj+=next.value;
 				s.statement=forj;
 				SymbolTable.push_back(s);
-				if(declaration()){
+				if(declaration(next)){
 					forj=";";
 					ExpressionTree *subtree = new ExpressionTree;
 					if(expression(*subtree)){//possibly too vague
@@ -260,7 +273,7 @@ class Parser{
 							forj+=";";
 							s.statement=forj;
 							SymbolTable.push_back(s);
-							while(statement()){//doesnt allow i++
+							while(statement(next)){//doesnt allow i++
 								next=tokenizer.next();
 								if(next.type==CLOSE_PAREN){
 									forj = next.value;
@@ -269,7 +282,8 @@ class Parser{
 										forj += next.value+'\n';
 										s.statement=forj;
 										SymbolTable.push_back(s);
-										while(statement()){
+										next=tokenizer.peek();
+										while(statement(next)){
 											next=tokenizer.next();
 										}
 										if(next.type==CLOSE_BRACKET){
@@ -289,10 +303,10 @@ class Parser{
 		return false;
 	}
 
-	bool whileloop(){
+	bool whileloop(Token &next){
 		string whilej;//string to store forloop
 		StateTree s;
-		Token next=tokenizer.next();
+		next=tokenizer.next();
 		if(next.type==WHILELOOP){
 			whilej+=next.value;
 			next=tokenizer.next();
@@ -309,7 +323,8 @@ class Parser{
 							whilej += next.value+'\n';
 							s.statement=whilej;
 							SymbolTable.push_back(s);
-							while(statement()){
+							next=tokenizer.peek();
+							while(statement(next)){
 								next=tokenizer.next();
 							}
 							if(next.type==CLOSE_BRACKET){
@@ -326,18 +341,55 @@ class Parser{
 		return false;
 	}
 
-	bool output(){
+	bool output(Token &next){
+		string outj;//string to store output
+		StateTree s;
+		int counter=0;
+		cout << next.value << endl;
+		if(next.type==COUT){
+			next=tokenizer.next();
+			outj="process.stdout.write(";
+			next=tokenizer.next();
+			//cout << next.value << endl;
+			while(next.type==OSTREAM){
+				s.statement=outj;
+				SymbolTable.push_back(s);
+				outj="";
+				if(counter>=1)//makes sure a comma is put in for additional outputs beyond first
+					outj+=",";
+				counter++;
+				next=tokenizer.peek();
+				if(next.type==QUOTS){
+					next=tokenizer.next();
+					outj+="\"";
+					next=tokenizer.next();//possible bug where it doesnt grab everything between quots
+					outj+=next.value;
+					next=tokenizer.next();
+					if(next.type==QUOTS){
+						outj+="\"";
+						next=tokenizer.next();
+					}
+				}
+				else if(next.type==statement(next))  //too vague for all cases
+					next=tokenizer.next();
+			}
+			if(next.type==SEMICOLON){
+				outj+=");\n";
+				s.statement=outj;
+				SymbolTable.push_back(s);
+			}
+		}else error.push_back("expected cout keyword");
 		return false;
 	}
 
-    bool declaration(){
-		Token next=tokenizer.peek();//next few lines ensure close bracket in for loop isnt consumed
-				if(next.type!=CLOSE_BRACKET)
-					next=tokenizer.next();
-        if(next.type==DATATYPE){
+    bool declaration(Token &next){
+		  next=tokenizer.peek();
+      if(next.type==DATATYPE){
+			next=tokenizer.next();
             ExpressionTree *subtree=new ExpressionTree;
-            next=tokenizer.next();
+            next=tokenizer.peek();
             if(next.type==VARNAME){
+				next=tokenizer.next();
                 subtree=new ExpressionTree(next,NULL,NULL);
                 if(init_decl(*subtree)){
 					StateTree s;
@@ -356,14 +408,15 @@ class Parser{
     }
     bool init_decl(ExpressionTree &tree){
         Token next=tokenizer.next();
+		cout << endl << next.value << endl;
         if(next.type==SEMICOLON){
-            return true;
+			return true;
         }
         else if(next.type==EQUAL){
             ExpressionTree *subtree=new ExpressionTree();
             if(expression(*subtree)){
                 tree.right=subtree;
-				next=tokenizer.peek();//next few lines ensure close paren in for loop isnt consumed
+				next=tokenizer.peek();
 				if(next.type!=CLOSE_PAREN)
 					next=tokenizer.next();
                 return true;
