@@ -95,11 +95,9 @@ class Parser{
 	bool fun(Token &next){
 		cout << endl << endl << "***FUNCTIONS***" << endl;
 		next=tokenizer.peek();
-		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
 			next=tokenizer.next(); 
-			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
 					next=tokenizer.next();
@@ -119,10 +117,8 @@ class Parser{
 				}
 				else {
 					next=tokenizer.next();
-					//cout << next.value << endl;
 					if (next.type==OPEN_PAREN) {
-						next = tokenizer.peek();
-						//cout << next.value << endl << endl;
+						next = tokenizer.next();
 						if (next.type==DATATYPE) {
 							next = tokenizer.next();
 						}
@@ -322,7 +318,7 @@ class Parser{
 						next=tokenizer.next();
 					}
 				}
-				else if(next.type==statement())  //too vague for all cases
+				else if(next.type==statement(next))  //too vague for all cases
 					next=tokenizer.next();
 			}
 			if(next.type==SEMICOLON){
