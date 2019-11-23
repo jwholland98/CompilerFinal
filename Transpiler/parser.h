@@ -129,7 +129,7 @@ class Parser{
 		return false;
 	}
 
-	bool statement(){//might need flag defaulted to false to know if coming from for loop
+	bool statement(){
 		Token next=tokenizer.peek();
 		if(next.type==DATATYPE){
 			while(declaration()){
@@ -155,7 +155,9 @@ class Parser{
 				return false;
 			}
 		}
-		else if(next.type==VARNAME){
+		cout << next.value << endl;
+		if(next.type==VARNAME){
+			cout << "hi2" << endl;
 			next=tokenizer.next();
 			//checks if var is declared already
 			for(auto i:SymbolTable){
@@ -239,7 +241,7 @@ class Parser{
 	}
 
 	bool whileloop(){
-		string whilej;//string to store forloop
+		string whilej;//string to store while loop
 		StateTree s;
 		Token next=tokenizer.next();
 		if(next.type==WHILELOOP){
@@ -276,6 +278,41 @@ class Parser{
 	}
 
 	bool output(){
+		string outj;//string to store output
+		StateTree s;
+		Token next=tokenizer.next();
+		int counter=0;
+		if(next.type==COUT){
+			outj="process.stdout.write(";
+			next=tokenizer.next();
+			while(next.type==OSTREAM){
+				s.statement=outj;
+				SymbolTable.push_back(s);
+				outj="";
+				if(counter>=1)//makes sure a comma is put in for additional outputs beyond first
+					outj+=",";
+				counter++;
+				next=tokenizer.next();
+				if(next.type==QUOTS){
+					//cout << "here" << endl;
+					outj+="\"";
+					next=tokenizer.next();//possible bug where it doesnt grab everythin between quots
+					outj+=next.value;
+					next=tokenizer.next();
+					if(next.type==QUOTS){
+						outj+="\"";
+						next=tokenizer.next();
+					}
+				}
+				else if(next.type==statement())  //too vague for all cases
+					next=tokenizer.next();
+			}
+			if(next.type==SEMICOLON){
+				outj+=");\n";
+				s.statement=outj;
+				SymbolTable.push_back(s);
+			}
+		}else error.push_back("expected cout keyword");
 		return false;
 	}
 

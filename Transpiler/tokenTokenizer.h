@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{COUT, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+typedef enum{QUOTS, COUT,OSTREAM, ISTREAM, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
              MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
@@ -38,13 +38,17 @@ class Tokenizer{
 
         if (regex_match(remaining,sm,regex("(\\+|-).*"))) 
           return Token(PLUSMINUS_OP,sm[1]);
+        if (regex_match(remaining,sm,regex("((<<)).*"))) 
+          return Token(OSTREAM,sm[1]);
+        if (regex_match(remaining,sm,regex("((>>)).*"))) 
+          return Token(ISTREAM,sm[1]);
         if (regex_match(remaining,sm,regex("((<=)|(=>)|(==)|(<>)|<|>).*"))) 
           return Token(RELATIONAL_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(=).*"))) 
           return Token(EQUAL,sm[1]);
         if (regex_match(remaining,sm,regex("(;).*"))) 
           return Token(SEMICOLON,sm[1]);
-        if (regex_match(remaining,sm,regex("(or).*"))) 
+        if (regex_match(remaining,sm,regex("(\\|\\|).*"))) 
           return Token(ADDITIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(#include).*"))) 
           return Token(INCLUDE,sm[1]);
@@ -52,7 +56,7 @@ class Tokenizer{
           return Token(USING,sm[1]);
         if (regex_match(remaining,sm,regex("(cout).*"))) 
           return Token(COUT,sm[1]);
-        if (regex_match(remaining,sm,regex("(\\*|/|div|mod|and).*"))) 
+        if (regex_match(remaining,sm,regex("(\\*|/|%|&&).*"))) 
           return Token(MULTIPLICATIVE_OP,sm[1]);
         if (regex_match(remaining,sm,regex("(for).*"))) 
           return Token(FORLOOP,sm[1]);
@@ -66,6 +70,8 @@ class Tokenizer{
           return Token(OPEN_PAREN,sm[1]);
         if (regex_match(remaining,sm,regex("(\\)).*"))) 
           return Token(CLOSE_PAREN,sm[1]);
+        if (regex_match(remaining,sm,regex("(\").*"))) 
+          return Token(QUOTS,sm[1]);
         if (regex_match(remaining,sm,regex("(\\{).*"))) 
           return Token(OPEN_BRACKET,sm[1]);
         if (regex_match(remaining,sm,regex("(\\}).*"))) 

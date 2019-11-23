@@ -11,16 +11,17 @@ int main(){
 						"#include <iostream>"
 						"using namespace std;"//this has to be included for some reason; address later
 						"int main(){"
-								"while(i>3){"
+							"cout << i;"
+							"while(i>3){"
 								"int x=5+4;"
 								"int y=(3+2);"
 								"int a=12;"
 							"}"
-						"}"
+						"}"/*
 						
 						"int test() {"
 								"int x=5;"
-						"}";
+						"}"*/;
 	p.scan(expression);
 	summary();
 	return 0;
