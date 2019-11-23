@@ -299,12 +299,10 @@ class Parser{
 		string outj;//string to store output
 		StateTree s;
 		int counter=0;
-		cout << next.value << endl;
 		if(next.type==COUT){
 			next=tokenizer.next();
 			outj="process.stdout.write(";
 			next=tokenizer.next();
-			//cout << next.value << endl;
 			while(next.type==OSTREAM){
 				s.statement=outj;
 				SymbolTable.push_back(s);
@@ -312,21 +310,26 @@ class Parser{
 				if(counter>=1)//makes sure a comma is put in for additional outputs beyond first
 					outj+=",";
 				counter++;
-				next=tokenizer.peek();
+				next=tokenizer.next();
 				if(next.type==QUOTS){
-					next=tokenizer.next();
 					outj+="\"";
 					next=tokenizer.next();//possible bug where it doesnt grab everything between quots
 					outj+=next.value;
 					next=tokenizer.next();
 					if(next.type==QUOTS){
 						outj+="\"";
-						next=tokenizer.next();
+						next=tokenizer.peek();
 					}
 				}
-				else if(next.type==statement(next))  //too vague for all cases
-					next=tokenizer.next();
+				else if(next.type==VARNAME){//add check if existing variable
+					outj+=next.value;
+					s.statement=outj;
+					SymbolTable.push_back(s);
+					outj="";
+					next=tokenizer.peek();
+				}
 			}
+			next=tokenizer.next();
 			if(next.type==SEMICOLON){
 				outj+=");\n";
 				s.statement=outj;
