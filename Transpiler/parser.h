@@ -337,12 +337,13 @@ class Parser{
 	}
 
     bool declaration(Token &next){
-		next=tokenizer.peek();
-        if(next.type==DATATYPE){
+		  next=tokenizer.peek();
+      if(next.type==DATATYPE){
 			next=tokenizer.next();
             ExpressionTree *subtree=new ExpressionTree;
-            next=tokenizer.next();
+            next=tokenizer.peek();
             if(next.type==VARNAME){
+				next=tokenizer.next();
                 subtree=new ExpressionTree(next,NULL,NULL);
                 if(init_decl(*subtree)){
 					StateTree s;
@@ -361,14 +362,15 @@ class Parser{
     }
     bool init_decl(ExpressionTree &tree){
         Token next=tokenizer.next();
+		cout << endl << next.value << endl;
         if(next.type==SEMICOLON){
-            return true;
+			return true;
         }
         else if(next.type==EQUAL){
             ExpressionTree *subtree=new ExpressionTree();
             if(expression(*subtree)){
                 tree.right=subtree;
-				next=tokenizer.peek();//next few lines ensure close paren in for loop isnt consumed
+				next=tokenizer.peek();
 				if(next.type!=CLOSE_PAREN)
 					next=tokenizer.next();
                 return true;

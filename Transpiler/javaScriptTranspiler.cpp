@@ -8,15 +8,16 @@ using namespace std;
 int main(){
 	Parser p;
 	string expression = 
-						"#include <iostream>"
-						"using namespace std;"
+						//"#include <iostream>"
+						//"using namespace std;"
 						"int main(){"
 							"int i=0;"
 							"cout << \"hi\";"
-							"while(i>3){"
+							"for(int i=0;i<4;i=i+1){"
 								"int x=5+4;"
 								"int y=(3+2);"
 								"int a=12;"
+							//	"i++"
 							"}"
 						"}"
 						
