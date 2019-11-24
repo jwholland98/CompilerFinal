@@ -20,11 +20,23 @@ void summary(){
 	cout << endl << endl << "***SUMMARY***" << endl;
 	for(auto i:SymbolTable){
 		if(i.statement==""){
+			//cout << "why";
 			i.tree.show(cout);
 		}
 		else
 			cout << i.statement;
 	}
+}
+
+bool exists(Token &next){//checks if var is declared already
+	for(auto i:SymbolTable){
+		if(i.statement==""){
+			if(i.tree.operation.value==next.value){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 class Parser{
@@ -51,7 +63,7 @@ class Parser{
 			s.statement = "\n";
 			SymbolTable.push_back(s);
 		}
-		return true;
+		return (error.size()==0);
 	}
 
 	bool include(Token &next){
@@ -146,8 +158,9 @@ class Parser{
 		return false;
 	}
 
-	bool statement(Token &next){//might need flag defaulted to false to know if coming from for loop
+	bool statement(Token &next){
 		cout << endl << endl << "***STATEMENT***" << endl;
+		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			while(declaration(next)){
 				StateTree s;
@@ -168,7 +181,7 @@ class Parser{
 			if(whileloop(next))
 				return true;
 			else{
-				error.push_back("Invalid syntax in for loop");
+				error.push_back("Invalid syntax in while loop");
 				return false;
 			}
 		}
@@ -198,7 +211,7 @@ class Parser{
 			error.push_back("undeclared variable used");
 			return false;
 		}
-		if(next.type==COUT){
+		else if(next.type==COUT){
 			if(output(next))
 				return true;
 			else{
@@ -206,10 +219,7 @@ class Parser{
 				return false;
 			}
 		}
-		else{
-			error.push_back("Expected DataType, variable name, or for loop");
-			return false;
-		}
+		return false;
 	}
 
 	bool ifelse(Token &next){
@@ -271,6 +281,7 @@ class Parser{
 							forj+=";";
 							s.statement=forj;
 							SymbolTable.push_back(s);
+							next=tokenizer.peek();
 							while(statement(next)){//doesnt allow i++
 								next=tokenizer.next();
 								if(next.type==CLOSE_PAREN){
@@ -288,6 +299,7 @@ class Parser{
 											forj =next.value + '\n';
 											s.statement=forj;
 											SymbolTable.push_back(s);
+											next=tokenizer.peek();
 											return true;
 										}else error.push_back("expected }");
 									}else error.push_back("expected {");
@@ -342,16 +354,17 @@ class Parser{
 	bool output(Token &next){
 		string outj;//string to store output
 		StateTree s;
-		int counter=0;
+		int counter=1;
 		if(next.type==COUT){
 			next=tokenizer.next();
 			outj="process.stdout.write(";
 			next=tokenizer.next();
 			while(next.type==OSTREAM){
 				s.statement=outj;
+				cout << '_' << s.statement << '_' << endl;
 				SymbolTable.push_back(s);
 				outj="";
-				if(counter>=1)//makes sure a comma is put in for additional outputs beyond first
+				if(counter%2==0)//makes sure a comma is put in for additional outputs beyond first
 					outj+=",";
 				counter++;
 				next=tokenizer.next();
@@ -365,11 +378,14 @@ class Parser{
 						next=tokenizer.peek();
 					}
 				}
-				else if(next.type==VARNAME){//add check if existing variable
-					outj+=next.value;
-					s.statement=outj;
-					SymbolTable.push_back(s);
-					outj="";
+				else if(next.type==VARNAME){
+					if(exists(next)){
+						outj+=next.value;
+						next=tokenizer.peek();
+					}
+				}
+				else if(next.type==ENDL){//add check if existing variable
+					outj+="\"\\n\"";
 					next=tokenizer.peek();
 				}
 			}
@@ -378,14 +394,16 @@ class Parser{
 				outj+=");\n";
 				s.statement=outj;
 				SymbolTable.push_back(s);
+				next=tokenizer.peek();
+				return true;
 			}
 		}else error.push_back("expected cout keyword");
 		return false;
 	}
 
     bool declaration(Token &next){
-		  next=tokenizer.peek();
-      if(next.type==DATATYPE){
+		next=tokenizer.peek();
+        if(next.type==DATATYPE){
 			next=tokenizer.next();
             ExpressionTree *subtree=new ExpressionTree;
             next=tokenizer.peek();
