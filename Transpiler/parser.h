@@ -5,7 +5,10 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+<<<<<<< HEAD
 #include <iostream>
+=======
+>>>>>>> 5a2bcb352e9119f6514d5b0be5cba0a8ff17ffd8
 #include <fstream>
 
 using namespace std;
@@ -20,13 +23,13 @@ vector<StateTree> SymbolTable;
 
 void summary(){
 	cout << endl << endl << "***SUMMARY***" << endl;
+	ofstream out("output.txt");
 	for(auto i:SymbolTable){
 		if(i.statement==""){
-			//cout << "why";
-			i.tree.show(cout);
+			i.tree.show(out);
 		}
 		else
-			cout << i.statement;
+			out << i.statement;
 	}
 }
 
