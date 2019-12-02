@@ -339,13 +339,8 @@ class Parser{
 	}
 
     bool declaration(Token &next){
-<<<<<<< HEAD
-		next=tokenizer.peek();//next few lines ensure close bracket in for loop isnt consumed
-		if(next.type==DATATYPE){
-=======
 		  next=tokenizer.peek();
       if(next.type==DATATYPE){
->>>>>>> e769d7a53e5765f9ca71e792c93ca8dbf4002184
 			next=tokenizer.next();
             ExpressionTree *subtree=new ExpressionTree;
             next=tokenizer.peek();
