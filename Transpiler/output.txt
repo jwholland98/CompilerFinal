@@ -1,0 +1,6 @@
+
+
+[x]-->[0]
+process.stdout.write("HelloWorld",x);
+for([i]-->[0];i<3;i=i+1){
+[y]-->[2]
