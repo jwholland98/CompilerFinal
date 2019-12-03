@@ -6,6 +6,19 @@
 
 using namespace std;
 
+void codeGen(){
+	ofstream out("output.txt");
+	for(auto i:SymbolTable){
+		if(i.statement==""){
+			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
+			out << line;
+		}
+		else
+			out << i.statement;
+	}
+}
+
+
 int main(){
 	ifstream in;
     stringstream ss;
@@ -18,6 +31,6 @@ int main(){
     in.close();
 	Parser p;
 	p.scan(ss.str());
-	summary();
+	codeGen();
 	return 0;
 }

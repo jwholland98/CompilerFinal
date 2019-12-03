@@ -13,22 +13,7 @@ struct StateTree{
 	ExpressionTree tree;
 	string statement = "";
 };
-
-
 vector<StateTree> SymbolTable;
-
-void summary(){
-	cout << endl << endl << "***SUMMARY***" << endl;
-	ofstream out("output.txt");
-	for(auto i:SymbolTable){
-		if(i.statement==""){
-			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
-			out << line;
-		}
-		else
-			out << i.statement;
-	}
-}
 
 bool exists(Token &next){//checks if var is declared already
 	for(auto i:SymbolTable){
@@ -426,7 +411,6 @@ class Parser{
                 return false;
             }
         }
-        error.push_back("expected data type");
         return false;
     }
     bool init_decl(ExpressionTree &tree){
@@ -604,6 +588,7 @@ class Parser{
             return tree;
         } 
         else {
+			cout << endl << "***errors***" << endl;
             for(auto i:error)
 			    cerr << i << endl;
         }
