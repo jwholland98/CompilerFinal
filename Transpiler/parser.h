@@ -22,7 +22,8 @@ void summary(){
 	ofstream out("output.txt");
 	for(auto i:SymbolTable){
 		if(i.statement==""){
-			i.tree.show(out);
+			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
+			out << line;
 		}
 		else
 			out << i.statement;

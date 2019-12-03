@@ -17,25 +17,7 @@ int main(){
     }
     in.close();
 	Parser p;
-<<<<<<< HEAD
 	p.scan(ss.str());
-=======
-	string expression = 
-						//"#include <iostream>"
-						//"using namespace std;"
-						"int main(){"
-							"int i=0;"
-						"}"
-						
-						"int foo(){"
-								"int r=2;"
-						"}"
-
-						"int test(int x){"
-								"x=5;"
-						"}";
-	p.scan(expression);
->>>>>>> andrew-new
 	summary();
 	return 0;
 }
