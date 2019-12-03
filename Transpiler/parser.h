@@ -106,7 +106,6 @@ class Parser{
 	}
 
 	bool fun(Token &next){
-		cout << endl << endl << "***FUNCTIONS***" << endl;
 		next=tokenizer.peek();
 		//cout << next.value << endl;
 		if(next.type==DATATYPE){
@@ -115,6 +114,7 @@ class Parser{
 			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
+					cout << endl << endl << "***MAIN FUNCTION***" << endl;
 					next=tokenizer.next();
 					if(next.type==OPEN_PAREN){//can add params into main later
 						next=tokenizer.next();
@@ -138,13 +138,15 @@ class Parser{
 						next = tokenizer.peek();
 						//cout << next.value << endl << endl;
 						if (next.type==DATATYPE) {
+							cout << endl << endl << "***FUNCTION(S) WITH PARAM(S)***" << endl;
 							next = tokenizer.next();
 						}
 						else if (next.type==CLOSE_PAREN) {
+							cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
 								while(statement(next)) {
-									cout << next.value << endl;
+									//cout << next.value << endl;
 								}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
@@ -428,7 +430,6 @@ class Parser{
     }
     bool init_decl(ExpressionTree &tree){
         Token next=tokenizer.next();
-		cout << endl << next.value << endl;
         if(next.type==SEMICOLON){
 			return true;
         }
