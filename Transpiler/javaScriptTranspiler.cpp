@@ -7,7 +7,7 @@
 using namespace std;
 
 void codeGen(){
-	ofstream out("output.js");
+	ofstream out("output.html");
 	out << "<!Doctype html>\n<html>\n<head>\n\n</head>\n<body>\n<script>\n";
 	for(auto i:SymbolTable){
 		if(i.statement==""){
