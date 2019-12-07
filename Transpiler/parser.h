@@ -96,7 +96,7 @@ class Parser{
 		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
-			next=tokenizer.next(); 
+			next=tokenizer.next();
 			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
@@ -208,6 +208,14 @@ class Parser{
 				return false;
 			}
 		}
+		else if(next.type==CIN){
+			if(cinCheck(next))
+				return true;
+			else{
+				error.push_back("Invalid syntax in cin");
+				return false;
+			}
+		}
 		return false;
 	}
 
@@ -248,7 +256,7 @@ class Parser{
 		}else error.push_back("Expected 'if' keyword");
 		return false;
 	}
-    
+
 	bool forloop(Token &next){
 		string forj;//string to store forloop
 		StateTree s;
@@ -303,7 +311,7 @@ class Parser{
 	}
 
 	bool whileloop(Token &next){
-		string whilej;//string to store forloop
+		string whilej;//string to store whileloop
 		StateTree s;
 		next=tokenizer.next();
 		if(next.type==WHILELOOP){
@@ -337,6 +345,41 @@ class Parser{
 				}else error.push_back("expected expression");
 			}else error.push_back("expected (");
 		}else error.push_back("expected while keyword");
+		return false;
+	}
+
+	bool cinCheck(Token &next){
+		if(next.type==CIN){
+			next = tokenizer.next();
+			if(cinInput(next))
+				return true;
+		}else error.push_back("Expected 'cin' keyword.");
+		return false;
+	}
+
+	bool cinInput(Token &next){
+		string inj;// string to store 'cin >>' to Javascript
+		StateTree s;
+		next = tokenizer.next();
+		if(next.type==ISTREAM){
+			next = tokenizer.next();
+			if(next.type==VARNAME){
+				if(exists(next)){
+					inj = next.value + " = prompt(\"previous cout text here\");\n";
+					s.statement = inj;
+					next=tokenizer.next(); // ---------------------peek vs next? ---------
+					if(next.type==SEMICOLON){
+						SymbolTable.push_back(s);
+						cout << "yay" << endl;
+						return true;
+					}
+					else if(next.type==ISTREAM){
+						SymbolTable.push_back(s);
+						cinInput(next);
+					}else error.push_back("Expected ; or >> in 'cin'");
+				}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
+			}else error.push_back("Expected variable name");
+		}else error.push_back("Expected >> in 'cin >> <variable>'");
 		return false;
 	}
 
@@ -434,7 +477,7 @@ class Parser{
         return false;
     }
     bool expression(ExpressionTree &tree){
-		ExpressionTree *subtree=new ExpressionTree();	
+		ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    Token next=tokenizer.peek();
@@ -449,7 +492,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -463,7 +506,7 @@ class Parser{
 		return false;
     }
     bool additiveExpression(ExpressionTree &tree){
-        ExpressionTree *subtree=new ExpressionTree();	
+        ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    bool flag = false;
@@ -482,7 +525,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -496,7 +539,7 @@ class Parser{
 		return false;
     }
     bool multiplicativeExpression(ExpressionTree &tree){
-	    ExpressionTree *subtree=new ExpressionTree();		
+	    ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    Token next=tokenizer.peek();
@@ -514,7 +557,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -556,7 +599,7 @@ class Parser{
 					tree=subtree;
 					return true;
 				}
-            } 
+            }
             else error.push_back("Expected expression after (");
         }
         else if(next.type==UNSIGNED_INT){
@@ -586,7 +629,7 @@ class Parser{
         tokenizer.start(s);
         if (start()){
             return tree;
-        } 
+        }
         else {
 			cout << endl << "***errors***" << endl;
             for(auto i:error)
