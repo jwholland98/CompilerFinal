@@ -24,7 +24,7 @@ void codeGen(){
 int main(){
 	ifstream in;
     stringstream ss;
-    in.open("input.txt");
+    in.open("input.cpp");
     while (!in.eof()) {
         string line;
         getline(in,line);
