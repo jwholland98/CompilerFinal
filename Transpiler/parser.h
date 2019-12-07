@@ -395,7 +395,7 @@ class Parser{
 		int counter=1;
 		if(next.type==COUT){
 			next=tokenizer.next();
-			outj="process.stdout.write(";
+			outj="alert(";
 			next=tokenizer.next();
 			while(next.type==OSTREAM){
 				s.statement=outj;
