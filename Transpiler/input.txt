@@ -4,8 +4,15 @@ using namespace std;
 
 int main(){
     int x=0;
-    int pizza;
-    cout << "Hello World" << x;
-    cin >> pizza;
-    
+    int j=0;
+    int r=0;
+    int s=0;
+    cout << "Enter a value for j";
+    cin >> j;
+    for(int i=0; i<3;i=i+1){
+        j=j+5;
+    }
+    cout << "Enter a value for r and s";
+    cin >> r >> s >> x;
+    cout << j;
 }

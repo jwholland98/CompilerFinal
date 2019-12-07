@@ -354,6 +354,7 @@ class Parser{
 			if(cinInput(next))
 				return true;
 		}else error.push_back("Expected 'cin' keyword.");
+		cout << "here for some reason" << endl;
 		return false;
 	}
 
@@ -367,13 +368,16 @@ class Parser{
 				if(exists(next)){
 					inj = next.value + " = prompt(\"previous cout text here\");\n";
 					s.statement = inj;
-					next=tokenizer.next(); // ---------------------peek vs next? ---------
+					next=tokenizer.peek(); // ---------------------peek vs next? ---------
 					if(next.type==SEMICOLON){
+						next=tokenizer.next();
+						next=tokenizer.peek();
 						SymbolTable.push_back(s);
 						cout << "yay" << endl;
 						return true;
 					}
 					else if(next.type==ISTREAM){
+						//next = tokenizer.next();
 						SymbolTable.push_back(s);
 						cinInput(next);
 					}else error.push_back("Expected ; or >> in 'cin'");
