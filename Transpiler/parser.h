@@ -97,6 +97,8 @@ class Parser{
 			next=tokenizer.next();
 			next=tokenizer.next();
 			if(next.type==VARNAME) {
+				StateTree s;
+				string funj;
 				if(next.value=="main"){
 					cout << endl << endl << "***MAIN FUNCTION***" << endl;
 					next=tokenizer.next();
@@ -116,6 +118,9 @@ class Parser{
 					} else error.push_back("expected (");
 				}
 				else {
+					funj="function " + next.value + "(){\n";
+					s.statement=funj;
+					SymbolTable.push_back(s);
 					next=tokenizer.next();
 					cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
 					if(next.type==OPEN_PAREN){
@@ -127,6 +132,9 @@ class Parser{
 								while(statement(next)){}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
+									funj="\n}";
+									s.statement=funj;
+									SymbolTable.push_back(s);
 									return true;
 								} else error.push_back("expected }");
 							} else error.push_back("expected {");
@@ -209,9 +217,7 @@ class Parser{
 	}
 
 	bool ifelse(Token &next){
-		
 		next=tokenizer.next();
-		next = tokenizer.next();
 		string ifelsej;
 		StateTree s;
 		if(next.type==IF){
@@ -254,7 +260,7 @@ class Parser{
 											ifelsej = next.value + '\n';
 											s.statement = ifelsej;
 											SymbolTable.push_back(s);
-											//next = tokenizer.peek();
+											next = tokenizer.peek();
 											return true;
 										}else error.push_back("Expected } in 'if' statment");
 									}else error.push_back("Expected { in 'if' statment");
@@ -303,7 +309,7 @@ class Parser{
 											next=tokenizer.next();
 										}
 										if(next.type==CLOSE_BRACKET){
-											forj =next.value + '\n';
+											forj = '\n' + next.value + '\n';
 											s.statement=forj;
 											SymbolTable.push_back(s);
 											next=tokenizer.peek();
@@ -375,13 +381,11 @@ class Parser{
 							inj = "";
 							next=tokenizer.peek(); // ---------------------peek vs next? ---------
 						}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
-					}else error.push_back("Expected variable name");
+					}
 				} // end of while loop
 				if(next.type==SEMICOLON){
 					next=tokenizer.next();
 					next=tokenizer.peek();
-					SymbolTable.push_back(s);
-					cout << "yay" << endl;
 					return true;
 				}else error.push_back("Expected ; or >> in 'cin'");
 			}else error.push_back("Expected >> in 'cin >> <variable>'");
@@ -399,7 +403,6 @@ class Parser{
 			next=tokenizer.next();
 			while(next.type==OSTREAM){
 				s.statement=outj;
-				cout << '_' << s.statement << '_' << endl;
 				SymbolTable.push_back(s);
 				outj="";
 				if(counter%2==0)//makes sure a comma is put in for additional outputs beyond first

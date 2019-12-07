@@ -11,7 +11,7 @@ void codeGen(){
 	out << "<!Doctype html>\n<html>\n<head>\n\n</head>\n<body>\n<script>\n";
 	for(auto i:SymbolTable){
 		if(i.statement==""){
-			string line = "var " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
+			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
 			out << line;
 		}
 		else
