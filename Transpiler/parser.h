@@ -349,40 +349,33 @@ class Parser{
 	}
 
 	bool cinCheck(Token &next){
-		if(next.type==CIN){
-			next = tokenizer.next();
-			if(cinInput(next))
-				return true;
-		}else error.push_back("Expected 'cin' keyword.");
-		cout << "here for some reason" << endl;
-		return false;
-	}
-
-	bool cinInput(Token &next){
 		string inj;// string to store 'cin >>' to Javascript
 		StateTree s;
-		next = tokenizer.next();
-		if(next.type==ISTREAM){
+		if(next.type==CIN){
 			next = tokenizer.next();
-			if(next.type==VARNAME){
-				if(exists(next)){
-					inj = next.value + " = prompt(\"previous cout text here\");\n";
-					s.statement = inj;
-					next=tokenizer.peek(); // ---------------------peek vs next? ---------
-					if(next.type==SEMICOLON){
-						next=tokenizer.next(); //------- maybe need counter, as multiple cin >> s >> x >> r; breaks when leaving
-						next=tokenizer.peek();
-						SymbolTable.push_back(s);
-						cout << "yay" << endl;
-						return true;
-					}
-					else if(next.type==ISTREAM){
-						SymbolTable.push_back(s);
-						cinInput(next); // -------------recursion is probably breaking this. Nothing to return? Peeks? Nexts?
-					}else error.push_back("Expected ; or >> in 'cin'");
-				}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
-			}else error.push_back("Expected variable name");
-		}else error.push_back("Expected >> in 'cin >> <variable>'");
+			next = tokenizer.next();
+			if(next.type==ISTREAM){
+				while(next.type==ISTREAM){
+					next = tokenizer.next();
+					if(next.type==VARNAME){
+						if(exists(next)){
+							inj = next.value + " = prompt(\"previous cout text here\");\n";
+							s.statement = inj;
+							SymbolTable.push_back(s);
+							inj = "";
+							next=tokenizer.peek(); // ---------------------peek vs next? ---------
+						}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
+					}else error.push_back("Expected variable name");
+				} // end of while loop
+				if(next.type==SEMICOLON){
+					next=tokenizer.next();
+					next=tokenizer.peek();
+					SymbolTable.push_back(s);
+					cout << "yay" << endl;
+					return true;
+				}else error.push_back("Expected ; or >> in 'cin'");
+			}else error.push_back("Expected >> in 'cin >> <variable>'");
+		}else error.push_back("Expected 'cin' keyword");
 		return false;
 	}
 
