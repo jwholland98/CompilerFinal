@@ -17,19 +17,7 @@ int main(){
     }
     in.close();
 	Parser p;
-<<<<<<< HEAD
-	string expression ="int main(){"
-							"int i=0+3+i;"
-							"if(i<3){"
-								"int y=10;"
-							"}else{"
-								"int b=32;"
-							"}"
-						"}";
-	p.scan(expression);
-=======
 	p.scan(ss.str());
->>>>>>> 5a2bcb352e9119f6514d5b0be5cba0a8ff17ffd8
 	summary();
 	return 0;
 }

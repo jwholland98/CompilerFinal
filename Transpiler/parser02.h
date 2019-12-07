@@ -230,7 +230,9 @@ class Parser{
 	}
 
 	bool ifelse(Token &next){
-		next = tokenizer.next();
+		if(tokenizer.isPeeked(next)){
+			next = tokenizer.next();
+		}
 		string ifelsej;
 		StateTree s;
 		if(next.type==IF){
@@ -341,14 +343,15 @@ class Parser{
 	}
 
 	bool whileloop(Token &next){
-        next = tokenizer.next();
+		if(tokenizer.isPeeked(next)){
+			next = tokenizer.next();
+		}
 		string whilej;//string to store forloop
 		StateTree s;
 		if(next.type==WHILELOOP){
 			cout << "Made it into the while loop proper" << endl; // ++++++++++++++++++++++++++++++++++++++++++++++++++++
 			whilej+=next.value;
 			next=tokenizer.next();
-			cout << "sitting right here" << endl;
 			if(next.type==OPEN_PAREN){
 				whilej+=next.value;
 				ExpressionTree *subtree = new ExpressionTree;
