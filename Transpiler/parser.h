@@ -359,7 +359,7 @@ class Parser{
 					next = tokenizer.next();
 					if(next.type==VARNAME){
 						if(exists(next)){
-							inj = next.value + " = prompt(\"previous cout text here\");\n";
+							inj = next.value + " = prompt();\n";
 							s.statement = inj;
 							SymbolTable.push_back(s);
 							inj = "";
