@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef enum{IF, ELSE, QUOTS, COUT,OSTREAM, ISTREAM, ENDL, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+typedef enum{IF, ELSE, QUOTS, COUT, CIN, OSTREAM, ISTREAM, ENDL, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
              MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
 class Token{
@@ -15,7 +15,7 @@ class Token{
     string value;
     Token(TokenType newType=EOL,string newValue="") {
 		type=newType;
-		value=newValue;  
+		value=newValue;
     }
 };
 
@@ -37,57 +37,59 @@ class Tokenizer{
         smatch sm;
         string remainingCopy=line.substr(newPos);
 
-        if (regex_match(remainingCopy,sm,regex("(\\+|-).*"))) 
+        if (regex_match(remaining,sm,regex("(\\+|-).*")))
           return Token(PLUSMINUS_OP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("((<<)).*"))) 
+        if (regex_match(remaining,sm,regex("((<<)).*")))
           return Token(OSTREAM,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("((>>)).*"))) 
+        if (regex_match(remaining,sm,regex("((>>)).*")))
           return Token(ISTREAM,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("((<=)|(=>)|(==)|(<>)|<|>).*"))) 
+        if (regex_match(remaining,sm,regex("((<=)|(=>)|(==)|(<>)|<|>).*")))
           return Token(RELATIONAL_OP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(=).*"))) 
+        if (regex_match(remaining,sm,regex("(=).*")))
           return Token(EQUAL,sm[1]);
         if (regex_match(remainingCopy,sm,regex("(if).*")))
           return Token(IF,sm[1]);
         if (regex_match(remainingCopy,sm,regex("(else).*")))
           return Token(ELSE,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(;).*"))) 
+        if (regex_match(remaining,sm,regex("(;).*")))
           return Token(SEMICOLON,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\|\\|).*"))) 
+        if (regex_match(remaining,sm,regex("(\\|\\|).*")))
           return Token(ADDITIVE_OP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(#include).*"))) 
+        if (regex_match(remaining,sm,regex("(#include).*")))
           return Token(INCLUDE,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(usingnamespace).*"))) 
+        if (regex_match(remaining,sm,regex("(usingnamespace).*")))
           return Token(USING,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(cout).*"))) 
+        if(regex_match(remaining,sm,regex("(cin).*")))
+          return Token(CIN,sm[1]);
+        if (regex_match(remaining,sm,regex("(cout).*")))
           return Token(COUT,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(endl).*"))) 
+        if (regex_match(remaining,sm,regex("(endl).*")))
           return Token(ENDL,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\*|/|%|&&).*"))) 
+        if (regex_match(remaining,sm,regex("(\\*|/|%|&&).*")))
           return Token(MULTIPLICATIVE_OP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(for).*"))) 
+        if (regex_match(remaining,sm,regex("(for).*")))
           return Token(FORLOOP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(while).*"))) 
+        if (regex_match(remaining,sm,regex("(while).*")))
           return Token(WHILELOOP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("((bool)|(char)[(16_t)(32_t)]?|(int)|(long)|(signed)|(unsigned)|(float)|(double)|(auto)).*"))) 
+        if (regex_match(remaining,sm,regex("((bool)|(char)[(16_t)(32_t)]?|(int)|(long)|(signed)|(unsigned)|(float)|(double)|(auto)).*")))
           return Token(DATATYPE,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(not).*"))) 
+        if (regex_match(remaining,sm,regex("(not).*")))
           return Token(UNARY_OP,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\().*"))) 
+        if (regex_match(remaining,sm,regex("(\\().*")))
           return Token(OPEN_PAREN,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\)).*"))) 
+        if (regex_match(remaining,sm,regex("(\\)).*")))
           return Token(CLOSE_PAREN,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\").*"))) 
+        if (regex_match(remaining,sm,regex("(\").*")))
           return Token(QUOTS,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\{).*"))) 
+        if (regex_match(remaining,sm,regex("(\\{).*")))
           return Token(OPEN_BRACKET,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("(\\}).*"))) 
+        if (regex_match(remaining,sm,regex("(\\}).*")))
           return Token(CLOSE_BRACKET,sm[1]);
         if (regex_match(remainingCopy,sm,regex("([_$[a-zA-z]+[_$\\w]*).*")))
           return Token(VARNAME,sm[1]);
         if (regex_match(remainingCopy,sm,regex("([0-9]+).*")))
           return Token(UNSIGNED_INT,sm[1]);
-        if (regex_match(remainingCopy,sm,regex("([0-9]*/.[0-9]+).*"))) 
+        if (regex_match(remaining,sm,regex("([0-9]*/.[0-9]+).*")))
           return Token(UNSIGNED_REAL,sm[1]);
         return Token();
   }

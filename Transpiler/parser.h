@@ -13,21 +13,7 @@ struct StateTree{
 	ExpressionTree tree;
 	string statement = "";
 };
-
-
 vector<StateTree> SymbolTable;
-
-void summary(){
-	cout << endl << endl << "***SUMMARY***" << endl;
-	ofstream out("output.txt");
-	for(auto i:SymbolTable){
-		if(i.statement==""){
-			i.tree.show(out);
-		}
-		else
-			out << i.statement;
-	}
-}
 
 bool exists(Token &next){//checks if var is declared already
 	for(auto i:SymbolTable){
@@ -106,15 +92,15 @@ class Parser{
 	}
 
 	bool fun(Token &next){
-		cout << endl << endl << "***FUNCTIONS***" << endl;
 		next=tokenizer.peek();
 		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
-			next=tokenizer.next(); 
+			next=tokenizer.next();
 			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
+					cout << endl << endl << "***MAIN FUNCTION***" << endl;
 					next=tokenizer.next();
 					if(next.type==OPEN_PAREN){//can add params into main later
 						next=tokenizer.next();
@@ -138,13 +124,15 @@ class Parser{
 						next = tokenizer.peek();
 						//cout << next.value << endl << endl;
 						if (next.type==DATATYPE) {
+							cout << endl << endl << "***FUNCTION(S) WITH PARAM(S)***" << endl;
 							next = tokenizer.next();
 						}
 						else if (next.type==CLOSE_PAREN) {
+							cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
 								while(statement(next)) {
-									cout << next.value << endl;
+									//cout << next.value << endl;
 								}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
@@ -226,6 +214,14 @@ class Parser{
 				return false;
 			}
 		}
+		else if(next.type==CIN){
+			if(cinCheck(next))
+				return true;
+			else{
+				error.push_back("Invalid syntax in cin");
+				return false;
+			}
+		}
 		return false;
 	}
 
@@ -286,7 +282,7 @@ class Parser{
 		}else error.push_back("Expected 'if' keyword");
 		return false;
 	}
-    
+
 	bool forloop(Token &next){
 		string forj;//string to store forloop
 		StateTree s;
@@ -341,8 +337,7 @@ class Parser{
 	}
 
 	bool whileloop(Token &next){
-        next = tokenizer.next();
-		string whilej;//string to store forloop
+		string whilej;//string to store whileloop
 		StateTree s;
 		if(next.type==WHILELOOP){
 			cout << "Made it into the while loop proper" << endl; // ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -378,6 +373,37 @@ class Parser{
 				}else error.push_back("expected expression");
 			}else error.push_back("expected (");
 		}else error.push_back("expected while keyword");
+		return false;
+	}
+
+	bool cinCheck(Token &next){
+		string inj;// string to store 'cin >>' to Javascript
+		StateTree s;
+		if(next.type==CIN){
+			next = tokenizer.next();
+			next = tokenizer.next();
+			if(next.type==ISTREAM){
+				while(next.type==ISTREAM){
+					next = tokenizer.next();
+					if(next.type==VARNAME){
+						if(exists(next)){
+							inj = next.value + " = prompt();\n";
+							s.statement = inj;
+							SymbolTable.push_back(s);
+							inj = "";
+							next=tokenizer.peek(); // ---------------------peek vs next? ---------
+						}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
+					}else error.push_back("Expected variable name");
+				} // end of while loop
+				if(next.type==SEMICOLON){
+					next=tokenizer.next();
+					next=tokenizer.peek();
+					SymbolTable.push_back(s);
+					cout << "yay" << endl;
+					return true;
+				}else error.push_back("Expected ; or >> in 'cin'");
+			}else error.push_back("Expected >> in 'cin >> <variable>'");
+		}else error.push_back("Expected 'cin' keyword");
 		return false;
 	}
 
@@ -452,12 +478,10 @@ class Parser{
                 return false;
             }
         }
-        error.push_back("expected data type");
         return false;
     }
     bool init_decl(ExpressionTree &tree){
         Token next=tokenizer.next();
-		cout << endl << next.value << endl;
         if(next.type==SEMICOLON){
 			return true;
         }
@@ -477,7 +501,7 @@ class Parser{
         return false;
     }
     bool expression(ExpressionTree &tree){
-		ExpressionTree *subtree=new ExpressionTree();	
+		ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    Token next=tokenizer.peek();
@@ -492,7 +516,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -506,7 +530,7 @@ class Parser{
 		return false;
     }
     bool additiveExpression(ExpressionTree &tree){
-        ExpressionTree *subtree=new ExpressionTree();	
+        ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    bool flag = false;
@@ -525,7 +549,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -539,7 +563,7 @@ class Parser{
 		return false;
     }
     bool multiplicativeExpression(ExpressionTree &tree){
-	    ExpressionTree *subtree=new ExpressionTree();		
+	    ExpressionTree *subtree=new ExpressionTree();
 	    ExpressionTree *left=NULL;
 	    Token last;
 	    Token next=tokenizer.peek();
@@ -557,7 +581,7 @@ class Parser{
 				next=tokenizer.next();
 				if(left!=NULL)
 					left=new ExpressionTree(last,left,subtree);
-				else 
+				else
 					left=subtree;
 				subtree=new ExpressionTree();
 				last=next;
@@ -599,7 +623,7 @@ class Parser{
 					tree=subtree;
 					return true;
 				}
-            } 
+            }
             else error.push_back("Expected expression after (");
         }
         else if(next.type==UNSIGNED_INT){
@@ -629,8 +653,9 @@ class Parser{
         tokenizer.start(s);
         if (start()){
             return tree;
-        } 
+        }
         else {
+			cout << endl << "***errors***" << endl;
             for(auto i:error)
 			    cerr << i << endl;
         }

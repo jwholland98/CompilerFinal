@@ -1,7 +1,19 @@
 
 
-[x]-->[0]
-process.stdout.write("HelloWorld",x);
-[r]-->[0]
-while(r<10){
-r=r+1}
+let x = 0;
+let j = 0;
+let r = 0;
+let s = 0;
+process.stdout.write("Enteravalueforj");
+j = prompt("previous cout text here");
+j = prompt("previous cout text here");
+for(let i = 0;;i<3;i=i+1){
+j=j+5}
+process.stdout.write("Enteravalueforrands");
+r = prompt("previous cout text here");
+s = prompt("previous cout text here");
+x = prompt("previous cout text here");
+j = prompt("previous cout text here");
+j = prompt("previous cout text here");
+process.stdout.write(j);
+

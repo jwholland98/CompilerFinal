@@ -4,12 +4,15 @@ using namespace std;
 
 int main(){
     int x=0;
-    cout << "Hello World" << x;
-   
-        int r = 0;
-        while(r<10){
-            r=r+1;
-        }
-        int y = 10;
-   
+    int j=0;
+    int r=0;
+    int s=0;
+    cout << "Enter a value for j";
+    cin >> j;
+    for(int i=0; i<3;i=i+1){
+        j=j+5;
+    }
+    cout << "Enter a value for r and s";
+    cin >> r >> s >> x >> j;
+    cout << j;
 }
