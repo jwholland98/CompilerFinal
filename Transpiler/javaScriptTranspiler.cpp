@@ -10,7 +10,7 @@ void codeGen(){
 	ofstream out("output.txt");
 	for(auto i:SymbolTable){
 		if(i.statement==""){
-			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
+			string line = "var " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
 			out << line;
 		}
 		else
