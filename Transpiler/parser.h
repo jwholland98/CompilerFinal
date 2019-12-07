@@ -220,30 +220,52 @@ class Parser{
 	}
 
 	bool ifelse(Token &next){
+		
 		next=tokenizer.next();
+		next = tokenizer.next();
+		string ifelsej;
+		StateTree s;
 		if(next.type==IF){
+			ifelsej += next.value;
 			next=tokenizer.next();
 			if(next.type==OPEN_PAREN){
+				ifelsej += next.value;
 				ExpressionTree *subtree= new ExpressionTree;
 				if(expression(*subtree)){
+					ifelsej += subtree->left->operation.value + subtree->operation.value + subtree->right->operation.value;
 					next=tokenizer.next();
 					if(next.type==CLOSE_PAREN){
+						ifelsej += next.value;
 						next=tokenizer.next();
 						if(next.type==OPEN_BRACKET){
+							ifelsej += next.value+'\n';
+							s.statement = ifelsej;
+							SymbolTable.push_back(s);
 							next=tokenizer.peek();
 							while(statement(next))
 								next=tokenizer.next();
 							if(next.type==CLOSE_BRACKET){
+								ifelsej = next.value + '\n';
+								s.statement = ifelsej;
+								SymbolTable.push_back(s);
 								next=tokenizer.peek();
 								if(next.type==ELSE){
 									next=tokenizer.next();
+									ifelsej = next.value;
 									next=tokenizer.next();
 									if(next.type==OPEN_BRACKET){
+										ifelsej += next.value + '\n';
+										s.statement = ifelsej;
+										SymbolTable.push_back(s);
 										next=tokenizer.peek();
 										while(statement(next)){
 											next=tokenizer.next();
 										}
 										if(next.type==CLOSE_BRACKET){
+											ifelsej = next.value + '\n';
+											s.statement = ifelsej;
+											SymbolTable.push_back(s);
+											//next = tokenizer.peek();
 											return true;
 										}else error.push_back("Expected } in 'if' statment");
 									}else error.push_back("Expected { in 'if' statment");
