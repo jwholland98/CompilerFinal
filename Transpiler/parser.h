@@ -280,10 +280,9 @@ class Parser{
 				s.statement=forj;
 				SymbolTable.push_back(s);
 				if(declaration(next)){
-					forj=";";
 					ExpressionTree *subtree = new ExpressionTree;
 					if(expression(*subtree)){//possibly too vague
-						forj+=subtree->left->operation.value + subtree->operation.value + subtree->right->operation.value;
+						forj=subtree->left->operation.value + subtree->operation.value + subtree->right->operation.value;
 						next=tokenizer.next();
 						if(next.type==SEMICOLON){
 							forj+=";";

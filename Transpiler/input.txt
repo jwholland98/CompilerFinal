@@ -16,3 +16,7 @@ int main(){
     cin >> r >> s >> x >> j;
     cout << j;
 }
+
+int foo(){
+    double q = 873475;
+}

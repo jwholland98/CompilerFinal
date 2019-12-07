@@ -7,15 +7,17 @@
 using namespace std;
 
 void codeGen(){
-	ofstream out("output.txt");
+	ofstream out("output.js");
+	out << "<!Doctype html>\n<html>\n<head>\n\n</head>\n<body>\n<script>\n";
 	for(auto i:SymbolTable){
 		if(i.statement==""){
-			string line = "let " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
+			string line = "var " + i.tree.operation.value + " = " + i.tree.right->treeToString() + ";";
 			out << line;
 		}
 		else
 			out << i.statement;
 	}
+	out << "</script>\n</body>\n</html>\n";
 }
 
 
