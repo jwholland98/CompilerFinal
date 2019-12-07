@@ -396,7 +396,7 @@ class Parser{
 		int counter=1;
 		if(next.type==COUT){
 			next=tokenizer.next();
-			outj="document.write(";
+			outj="alert(";
 			next=tokenizer.next();
 			while(next.type==OSTREAM){
 				s.statement=outj;
