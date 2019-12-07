@@ -370,16 +370,15 @@ class Parser{
 					s.statement = inj;
 					next=tokenizer.peek(); // ---------------------peek vs next? ---------
 					if(next.type==SEMICOLON){
-						next=tokenizer.next();
+						next=tokenizer.next(); //------- maybe need counter, as multiple cin >> s >> x >> r; breaks when leaving
 						next=tokenizer.peek();
 						SymbolTable.push_back(s);
 						cout << "yay" << endl;
 						return true;
 					}
 					else if(next.type==ISTREAM){
-						//next = tokenizer.next();
 						SymbolTable.push_back(s);
-						cinInput(next);
+						cinInput(next); // -------------recursion is probably breaking this. Nothing to return? Peeks? Nexts?
 					}else error.push_back("Expected ; or >> in 'cin'");
 				}else error.push_back("Variable in 'cin >> <variable>' must be declared before use.");
 			}else error.push_back("Expected variable name");

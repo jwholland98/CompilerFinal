@@ -13,6 +13,6 @@ int main(){
         j=j+5;
     }
     cout << "Enter a value for r and s";
-    cin >> r >> s >> x;
+    cin >> r >> s >> x >> j;
     cout << j;
 }
