@@ -93,16 +93,14 @@ class Parser{
 
 	bool fun(Token &next){
 		next=tokenizer.peek();
-		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			next=tokenizer.next();
 			next=tokenizer.next();
-			//cout << next.value << endl;
 			if(next.type==VARNAME) {
 				if(next.value=="main"){
 					cout << endl << endl << "***MAIN FUNCTION***" << endl;
 					next=tokenizer.next();
-					if(next.type==OPEN_PAREN){//can add params into main later
+					if(next.type==OPEN_PAREN){
 						next=tokenizer.next();
 						if(next.type==CLOSE_PAREN){
 							next=tokenizer.next();
@@ -112,44 +110,36 @@ class Parser{
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
 									return true;
-								}else error.push_back("expected }");
-							}else error.push_back("expected {");
-						}else error.push_back("expected )");
-					}else error.push_back("expected (");
+								} else error.push_back("expected }");
+							} else error.push_back("expected {");
+						} else error.push_back("expected )");
+					} else error.push_back("expected (");
 				}
 				else {
 					next=tokenizer.next();
-					//cout << next.value << endl;
-					if (next.type==OPEN_PAREN) {
-						next = tokenizer.peek();
-						//cout << next.value << endl << endl;
-						if (next.type==DATATYPE) {
-							cout << endl << endl << "***FUNCTION(S) WITH PARAM(S)***" << endl;
-							next = tokenizer.next();
-						}
-						else if (next.type==CLOSE_PAREN) {
-							cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
+					cout << endl << endl << "***FUNCTION(S) WITH NO PARAM(S)***" << endl;
+					if(next.type==OPEN_PAREN){
+						next=tokenizer.next();
+						if(next.type==CLOSE_PAREN){
 							next=tokenizer.next();
 							if(next.type==OPEN_BRACKET){
-								while(statement(next)) {
-									//cout << next.value << endl;
-								}
+								next=tokenizer.peek();
+								while(statement(next)){}
 								next=tokenizer.next();
 								if(next.type==CLOSE_BRACKET){
 									return true;
 								} else error.push_back("expected }");
 							} else error.push_back("expected {");
-						}
-					}
-				}
-			}else error.push_back("expected variable name");
+						} else error.push_back("expected )");
+					} else error.push_back("expected (");
+				} 
+			} else error.push_back("expected variable name");
 		}
 		return false;
 	}
 
 	bool statement(Token &next){
 		cout << endl << endl << "***STATEMENT***" << endl;
-		//cout << next.value << endl;
 		if(next.type==DATATYPE){
 			while(declaration(next)){
 				StateTree s;
@@ -183,7 +173,6 @@ class Parser{
 		}
 		else if(next.type==VARNAME){
 			next=tokenizer.next();
-			//checks if var is declared already
 			for(auto i:SymbolTable){
 				if(i.statement==""){
 					if(i.tree.operation.value==next.value){
