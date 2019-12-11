@@ -6,10 +6,10 @@
 
 using namespace std;
 
-typedef enum{IF, ELSE, QUOTS, COUT, CIN, OSTREAM, ISTREAM, ENDL, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
+typedef enum { IF, ELSE, QUOTES, COUT, CIN, OSTREAM, ISTREAM, ENDL, USING, INCLUDE, FORLOOP, WHILELOOP, PLUSMINUS_OP, UNSIGNED_INT, UNSIGNED_REAL, DATATYPE, VARNAME, ADDITIVE_OP, RELATIONAL_OP,
              MULTIPLICATIVE_OP,UNARY_OP,OPEN_PAREN,CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET,EOL,EQUAL, SEMICOLON} TokenType;
 
-class Token{
+class Token {
     public:
     TokenType type;
     string value;
@@ -19,14 +19,14 @@ class Token{
     }
 };
 
-class Tokenizer{
+class Tokenizer {
     string line;
     int pos;
     public:
-    int getPosition(){
+    int getPosition() {
         return pos;
     }
-    void start(string newLine){
+    void start(string newLine) {
         line=newLine;
         line.erase(remove(line.begin(), line.end(), ' '), line.end());//removes whitespace
         pos=0;
@@ -35,7 +35,6 @@ class Tokenizer{
         smatch sm;
         string remaining=line.substr(pos);
         cout << remaining << endl;
-
         if (regex_match(remaining,sm,regex("(\\+|-).*")))
           return Token(PLUSMINUS_OP,sm[1]);
         if (regex_match(remaining,sm,regex("((<<)).*")))
@@ -79,7 +78,7 @@ class Tokenizer{
         if (regex_match(remaining,sm,regex("(\\)).*")))
           return Token(CLOSE_PAREN,sm[1]);
         if (regex_match(remaining,sm,regex("(\").*")))
-          return Token(QUOTS,sm[1]);
+          return Token(QUOTES,sm[1]);
         if (regex_match(remaining,sm,regex("(\\{).*")))
           return Token(OPEN_BRACKET,sm[1]);
         if (regex_match(remaining,sm,regex("(\\}).*")))
@@ -92,7 +91,7 @@ class Tokenizer{
           return Token(UNSIGNED_REAL,sm[1]);
         return Token();
     }
-    Token next(){
+    Token next() {
         Token t;
         t=peek();
         pos+=t.value.size();
